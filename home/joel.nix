@@ -3,6 +3,7 @@
 {
   imports = [
     ./desktop.nix
+    ./gnome.nix
   ];
 
   home.username = "joel";
@@ -36,6 +37,8 @@
   };
 
   programs.bash.enable = true;
+
+  programs.zed-editor.enable = true;
 
   xdg.configFile."1Password/ssh/agent.toml".text = ''
     [[ssh-keys]]

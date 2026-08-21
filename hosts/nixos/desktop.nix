@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 {
   # GDM presents both GNOME and Niri as selectable login sessions.
@@ -7,11 +7,26 @@
   services.displayManager.gdm.enable = true;
 
   services.desktopManager.gnome.enable = true;
-  programs.niri.enable = true;
+  programs.niri = {
+    enable = true;
+    package = pkgs-unstable.niri;
+  };
 
-  environment.systemPackages = with pkgs; [
-    ghostty
-    noctalia-shell
-    xwayland-satellite
+  # Use the proprietary user-space driver with
+  # NVIDIA's supported open kernel module instead of nouveau.
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  hardware.graphics.enable = true;
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = true;
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
+
+  environment.systemPackages = [
+    pkgs.ghostty
+    pkgs-unstable.noctalia-shell
+    pkgs.xwayland-satellite
   ];
 }
