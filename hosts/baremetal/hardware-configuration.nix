@@ -12,26 +12,31 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
+  
+  boot.initrd.luks.devices."cryptroot" = {
+    device = "/dev/disk/by-uuid/214b22f0-11fd-4359-babe-13a3d148e63c";
+  };
 
-  fileSystems."/" =
-    { device = "/dev/disk/by-uuid/915b6dca-a9ab-4434-b90f-797c1b8faa42";
-      fsType = "btrfs";
-    };
+  fileSystems."/" = {
+    device = "/dev/mapper/cryptroot";
+    fsType = "btrfs";
+    options = [ "subvol=@root" ];
+  };
 
   fileSystems."/home" =
-    { device = "/dev/disk/by-uuid/915b6dca-a9ab-4434-b90f-797c1b8faa42";
+    { device = "/dev/mapper/cryptroot";
       fsType = "btrfs";
-      options = [ "subvol=home" ];
+      options = [ "subvol=@home" ];
     };
 
   fileSystems."/nix" =
-    { device = "/dev/disk/by-uuid/915b6dca-a9ab-4434-b90f-797c1b8faa42";
+    { device = "/dev/mapper/cryptroot";
       fsType = "btrfs";
-      options = [ "subvol=nix" ];
+      options = [ "subvol=@nix" ];
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/60C7-3736";
+    { device = "/dev/disk/by-uuid/FD1A-64B3";
       fsType = "vfat";
       options = [ "fmask=0077" "dmask=0077" ];
     };
