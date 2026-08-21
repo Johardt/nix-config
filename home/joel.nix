@@ -3,6 +3,7 @@
 {
   imports = [
     ./desktop.nix
+    ./fish.nix
     ./gnome.nix
   ];
 

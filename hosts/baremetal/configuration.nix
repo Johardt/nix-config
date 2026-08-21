@@ -54,6 +54,9 @@
   # Required for unlocking LUKS2 volumes through enrolled TPM2 tokens. The
   # generated hardware module supplies the machine-specific LUKS device.
   boot.initrd.systemd.enable = true;
+  boot.initrd.luks.devices."cryptroot".crypttabExtraOpts = [
+    "tpm2-device=auto"
+  ];
 
   # Linux 7.2 does not currently compile with NVIDIA 595. 7.1 is the newest
   # kernel in this nixpkgs snapshot with a working NVIDIA open kernel module.
@@ -121,6 +124,7 @@
   users.users.joel = {
     isNormalUser = true;
     description = "Joel";
+    shell = pkgs.fish;
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -132,6 +136,7 @@
   # ---------------------------------------------------------------------------
 
   programs.firefox.enable = true;
+  programs.fish.enable = true;
 
   # ---------------------------------------------------------------------------
   # 1Password
