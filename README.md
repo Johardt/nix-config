@@ -9,12 +9,12 @@ mkdir -p /home/joel/nixos
 sudo chown -R joel:users /home/joel/nixos
 
 # Keep the hardware config generated for this machine.
-sudo cp /etc/nixos/hardware-configuration.nix /home/joel/nixos/hosts/nixos/
+sudo cp /etc/nixos/hardware-configuration.nix /home/joel/nixos/hosts/baremetal/
 
 # Bootstrap the flake directly; nh is installed by this switch.
 sudo nixos-rebuild switch \
   --extra-experimental-features 'nix-command flakes' \
-  --flake /home/joel/nixos#nixos
+  --flake /home/joel/nixos#baremetal
 ```
 
 After that, rebuild with:
@@ -23,4 +23,4 @@ After that, rebuild with:
 nh os switch
 ```
 
-The flake path is configured in `programs.nh.flake`; `/etc/nixos` is not used after bootstrap. This config expects the username `joel`, hostname `nixos`, x86-64/UEFI, and NVIDIA hardware—adjust those bits before the first rebuild if the new machine differs.
+The flake path is configured in `programs.nh.flake`; `/etc/nixos` is not used after bootstrap. This config expects the username `joel`, hostname `baremetal`, x86-64/UEFI, and NVIDIA hardware—adjust those bits before the first rebuild if the new machine differs.

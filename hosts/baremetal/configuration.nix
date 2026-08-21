@@ -28,6 +28,23 @@
   };
 
   # ---------------------------------------------------------------------------
+  # Btrfs
+  # ---------------------------------------------------------------------------
+
+  # The generated hardware configuration defines the devices and subvolumes;
+  # keep policy such as compression and maintenance here.
+  fileSystems."/".options = [ "compress=zstd" "noatime" ];
+  fileSystems."/home".options = [ "compress=zstd" "noatime" ];
+  fileSystems."/nix".options = [ "compress=zstd" "noatime" ];
+
+  # All three mounts live on the same Btrfs filesystem, so scrub it only once.
+  services.btrfs.autoScrub = {
+    enable = true;
+    interval = "monthly";
+    fileSystems = [ "/" ];
+  };
+
+  # ---------------------------------------------------------------------------
   # Boot
   # ---------------------------------------------------------------------------
 
@@ -42,7 +59,7 @@
   # Networking
   # ---------------------------------------------------------------------------
 
-  networking.hostName = "nixos";
+  networking.hostName = "baremetal";
   networking.networkmanager.enable = true;
 
   # ---------------------------------------------------------------------------

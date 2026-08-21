@@ -24,6 +24,10 @@
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
+  # Steam needs system-level integration for its runtime and 32-bit graphics
+  # stack, so use the NixOS module instead of adding the package directly.
+  programs.steam.enable = true;
+
   environment.systemPackages = [
     pkgs.ghostty
     pkgs-unstable.noctalia-shell

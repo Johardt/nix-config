@@ -19,12 +19,12 @@
       config.allowUnfree = true;
     };
   in {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.baremetal = nixpkgs.lib.nixosSystem {
       inherit system;
       specialArgs = { inherit pkgs-unstable; };
 
       modules = [
-        ./hosts/nixos/configuration.nix
+        ./hosts/baremetal/configuration.nix
 
         home-manager.nixosModules.home-manager
 

@@ -1,6 +1,10 @@
-{ ... }:
+{ pkgs, ... }:
 
 {
+  home.packages = [
+    pkgs.prismlauncher
+  ];
+
   # Keep the Niri session deliberately small. Noctalia provides its shell,
   # launcher, notifications, and other desktop UI.
   xdg.configFile."niri/config.kdl".text = ''
