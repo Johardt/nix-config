@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./desktop.nix
   ];
 
   # ---------------------------------------------------------------------------
@@ -15,6 +16,16 @@
   ];
 
   nixpkgs.config.allowUnfree = true;
+
+  programs.nh = {
+    enable = true;
+    flake = "/home/joel/nixos";
+
+    clean = {
+      enable = true;
+      extraArgs = "--keep-since 7d --keep 3";
+    };
+  };
 
   # ---------------------------------------------------------------------------
   # Boot
@@ -58,15 +69,6 @@
   };
 
   console.keyMap = "de";
-
-  # ---------------------------------------------------------------------------
-  # Desktop
-  # ---------------------------------------------------------------------------
-
-  services.xserver.enable = true;
-
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
 
   # ---------------------------------------------------------------------------
   # Audio

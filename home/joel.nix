@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  imports = [
+    ./desktop.nix
+  ];
+
   home.username = "joel";
   home.homeDirectory = "/home/joel";
 
@@ -32,6 +36,11 @@
   };
 
   programs.bash.enable = true;
+
+  xdg.configFile."1Password/ssh/agent.toml".text = ''
+    [[ssh-keys]]
+    vault = "CLI"
+  '';
 
   programs.home-manager.enable = true;
 }
