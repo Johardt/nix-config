@@ -21,8 +21,13 @@
     modesetting.enable = true;
     open = true;
     nvidiaSettings = true;
+    powerManagement.enable = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
+
+  # Preserve NVIDIA video memory across suspend outside a potentially
+  # size-constrained tmpfs to avoid incomplete GNOME/Wayland resumes.
+  boot.kernelParams = [ "nvidia.NVreg_TemporaryFilePath=/var/tmp" ];
 
   # Steam needs system-level integration for its runtime and 32-bit graphics
   # stack, so use the NixOS module instead of adding the package directly.

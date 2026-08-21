@@ -51,6 +51,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Required for unlocking LUKS2 volumes through enrolled TPM2 tokens. The
+  # generated hardware module supplies the machine-specific LUKS device.
+  boot.initrd.systemd.enable = true;
+
   # Linux 7.2 does not currently compile with NVIDIA 595. 7.1 is the newest
   # kernel in this nixpkgs snapshot with a working NVIDIA open kernel module.
   boot.kernelPackages = pkgs.linuxPackages_7_1;
