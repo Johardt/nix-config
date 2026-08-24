@@ -19,6 +19,13 @@ in
 
   home.stateVersion = "26.05";
 
+  home.sessionVariables.TERMINAL = "ghostty";
+
+  xdg.terminal-exec = {
+    enable = true;
+    settings.default = [ "com.mitchellh.ghostty.desktop" ];
+  };
+
   home.packages = with pkgs; [
     atuin-desktop
     btop
@@ -33,6 +40,8 @@ in
     lazygit
     luarocks
     neovim
+    nixd
+    nixfmt
     fd
     jq
     podman-desktop
@@ -207,6 +216,7 @@ in
 
   programs.zed-editor = {
     enable = true;
+    extensions = [ "nix" ];
     userSettings = builtins.fromJSON (builtins.readFile ./zed-settings.json);
   };
 

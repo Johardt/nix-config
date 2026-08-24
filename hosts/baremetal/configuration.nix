@@ -135,7 +135,11 @@
   # Programs that need system-level configuration
   # ---------------------------------------------------------------------------
 
-  programs.firefox.enable = true;
+  programs.firefox = {
+    enable = true;
+    # Use the macOS-style Command/Super modifier for Firefox accelerators.
+    preferences."ui.key.accelKey" = 224;
+  };
   programs.fish.enable = true;
 
   # Podman Desktop was part of the portable desktop toolset. Enable its native

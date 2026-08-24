@@ -31,11 +31,41 @@
         "!vtsls",
         "!typescript-language-server"
       ]
+    },
+    "Nix": {
+      "language_servers": ["nixd", "!nil"],
+      "formatter": {
+        "external": {
+          "command": "nixfmt",
+          "arguments": ["--"]
+        }
+      },
+      "format_on_save": "on"
     }
   },
   "lsp": {
     "biome": {
       "settings": { "require_config_file": true }
+    },
+    "nixd": {
+      "settings": {
+        "nixd": {
+          "nixpkgs": {
+            "expr": "import (builtins.getFlake \"/home/joel/nixos\").inputs.nixpkgs { }"
+          },
+          "formatting": {
+            "command": ["nixfmt"]
+          },
+          "options": {
+            "nixos": {
+              "expr": "(builtins.getFlake \"/home/joel/nixos\").nixosConfigurations.baremetal.options"
+            },
+            "home-manager": {
+              "expr": "(builtins.getFlake \"/home/joel/nixos\").nixosConfigurations.baremetal.options.home-manager.users.type.getSubOptions []"
+            }
+          }
+        }
+      }
     }
   },
   "helix_mode": false,

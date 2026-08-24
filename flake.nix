@@ -5,6 +5,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    nirimod = {
+      url = "github:srinivasr/nirimod";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     disko = {
       url = "github:nix-community/disko/latest";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -16,7 +21,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, disko, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, disko, nirimod, ... }:
   let
     system = "x86_64-linux";
     pkgs-unstable = import nixpkgs-unstable {
@@ -35,7 +40,7 @@
 
     nixosConfigurations.baremetal = nixpkgs.lib.nixosSystem {
       inherit system;
-      specialArgs = { inherit pkgs-unstable; };
+      specialArgs = { inherit pkgs-unstable nirimod; };
 
       modules = [
         ./hosts/baremetal/configuration.nix
@@ -46,7 +51,7 @@
           home-manager = {
             useGlobalPkgs = true;
             useUserPackages = true;
-            extraSpecialArgs = { inherit pkgs-unstable; };
+            extraSpecialArgs = { inherit pkgs-unstable nirimod; };
 
             users.joel = import ./home/joel.nix;
           };

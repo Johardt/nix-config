@@ -35,7 +35,7 @@
 
   environment.systemPackages = [
     pkgs.ghostty
-    pkgs-unstable.noctalia-shell
+    pkgs-unstable.noctalia
     pkgs.xwayland-satellite
   ];
 }
