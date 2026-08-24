@@ -1,5 +1,12 @@
 { config, pkgs, ... }:
 
+let
+  catppuccinBat = variant: pkgs.catppuccin.override {
+    inherit variant;
+    themeList = [ "bat" ];
+  };
+in
+
 {
   imports = [
     ./desktop.nix
@@ -13,17 +20,95 @@
   home.stateVersion = "26.05";
 
   home.packages = with pkgs; [
-    git
+    atuin-desktop
+    btop
+    codex
     curl
-    wget
-    ripgrep
+    delta
+    gawk
+    git-crypt
+    git-lfs
+    glow
+    gnupg
+    lazygit
+    luarocks
+    neovim
     fd
     jq
+    podman-desktop
+    ripgrep
     tree
-    codex
-    delta
-    git-lfs
+    wget
   ];
+
+  programs.atuin.settings = {
+    filter_mode_shell_up_key_binding = "directory";
+    style = "compact";
+    enter_accept = false;
+    sync.records = true;
+    search.disable_up_key = true;
+    ai.enabled = false;
+  };
+
+  # Atuin creates a regular default config on first launch. Home Manager owns
+  # this path now; account state, encryption keys, and history live elsewhere.
+  xdg.configFile."atuin/config.toml".force = pkgs.lib.mkForce true;
+
+  programs.bat = {
+    enable = true;
+    config = {
+      italic-text = "always";
+      style = "plain";
+      theme = "auto:system";
+      theme-dark = "Catppuccin Macchiato";
+      theme-light = "Catppuccin Latte";
+    };
+    themes = {
+      "Catppuccin Latte".src = "${catppuccinBat "latte"}/bat";
+      "Catppuccin Macchiato".src = "${catppuccinBat "macchiato"}/bat";
+    };
+  };
+
+  programs.mise.globalConfig.settings.color_theme = "catppuccin";
+
+  programs.helix = {
+    enable = true;
+    settings = {
+      theme = "catppuccin_macchiato";
+      editor = {
+        line-number = "relative";
+        cursor-shape = {
+          insert = "bar";
+          normal = "block";
+        };
+      };
+    };
+  };
+
+  programs.tmux = {
+    enable = true;
+    baseIndex = 1;
+    mouse = true;
+    plugins = with pkgs.tmuxPlugins; [
+      sensible
+      vim-tmux-navigator
+      {
+        plugin = catppuccin;
+        extraConfig = "set -g @catppuccin_flavor 'latte'";
+      }
+    ];
+    extraConfig = ''
+      set-option -sa terminal-overrides ",xterm*:Tc"
+      set -g pane-base-index 1
+      set-window-option -g pane-base-index 1
+      set-option -g renumber-windows on
+      set -g status-left ""
+      set -g status-right '#[fg=#{@thm_crust},bg=#{@thm_teal}] session: #S '
+      set -g status-right-length 100
+      bind '"' split-window -v -c "#{pane_current_path}"
+      bind % split-window -h -c "#{pane_current_path}"
+    '';
+  };
 
   programs.git = {
     enable = true;
@@ -120,7 +205,12 @@
 
   programs.bash.enable = true;
 
-  programs.zed-editor.enable = true;
+  programs.zed-editor = {
+    enable = true;
+    userSettings = builtins.fromJSON (builtins.readFile ./zed-settings.json);
+  };
+
+  xdg.configFile."ghostty/config".source = ./ghostty.conf;
 
   xdg.configFile."1Password/ssh/agent.toml".text = ''
     [[ssh-keys]]

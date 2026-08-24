@@ -15,7 +15,10 @@ in
       gnome-extension-manager
       gnome-tweaks
       bibata-cursors
+      geist-font
       inter
+      nerd-fonts.adwaita-mono
+      nerd-fonts.geist-mono
       nerd-fonts.jetbrains-mono
       papirus-icon-theme
     ]);

@@ -138,6 +138,15 @@
   programs.firefox.enable = true;
   programs.fish.enable = true;
 
+  # Podman Desktop was part of the portable desktop toolset. Enable its native
+  # NixOS backend and Docker-compatible socket/API rather than relying on a
+  # macOS VM such as Lima.
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    dockerSocket.enable = true;
+  };
+
   # ---------------------------------------------------------------------------
   # 1Password
   # ---------------------------------------------------------------------------

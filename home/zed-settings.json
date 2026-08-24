@@ -1,0 +1,121 @@
+{
+  "terminal": {
+    "shell": {
+      "program": "fish"
+    }
+  },
+  "auto_update": false,
+  "vim_mode": true,
+  "cli_default_open_behavior": "existing_window",
+  "outline_panel": { "dock": "left" },
+  "collaboration_panel": { "dock": "right" },
+  "ui_font_family": ".ZedSans",
+  "context_servers": {
+    "mcp-server-context7": {
+      "enabled": true,
+      "remote": false,
+      "settings": {}
+    }
+  },
+  "languages": {
+    "TypeScript": {
+      "language_servers": [
+        "typescript-ls",
+        "!vtsls",
+        "!typescript-language-server"
+      ]
+    },
+    "TSX": {
+      "language_servers": [
+        "typescript-ls",
+        "!vtsls",
+        "!typescript-language-server"
+      ]
+    }
+  },
+  "lsp": {
+    "biome": {
+      "settings": { "require_config_file": true }
+    }
+  },
+  "helix_mode": false,
+  "git_panel": {
+    "dock": "left",
+    "tree_view": true
+  },
+  "sticky_scroll": { "enabled": true },
+  "ssh_connections": [
+    {
+      "host": "johardt.me",
+      "username": "joel",
+      "args": [],
+      "projects": [{ "paths": ["/home/joel"] }]
+    },
+    {
+      "host": "mc.johardt.me",
+      "username": "joel",
+      "args": [],
+      "projects": [{ "paths": ["/srv/minecraft/./"] }]
+    }
+  ],
+  "show_edit_predictions": true,
+  "project_panel": {
+    "dock": "left",
+    "entry_spacing": "comfortable"
+  },
+  "relative_line_numbers": "disabled",
+  "title_bar": { "show_branch_status_icon": true },
+  "edit_predictions": {
+    "provider": "zed",
+    "disabled_globs": [],
+    "mode": "subtle"
+  },
+  "agent": {
+    "sidebar_side": "right",
+    "button": true,
+    "dock": "right",
+    "tool_permissions": { "default": "allow" },
+    "default_profile": "write",
+    "profiles": {},
+    "inline_assistant_model": {
+      "provider": "copilot_chat",
+      "model": "gpt-5-mini"
+    },
+    "default_model": {
+      "enable_thinking": false,
+      "provider": "ollama",
+      "model": "gemma4:latest"
+    },
+    "model_parameters": []
+  },
+  "buffer_font_family": "GeistMono Nerd Font",
+  "buffer_font_fallbacks": ["Symbols Nerd Font"],
+  "ui_font_size": 16.0,
+  "buffer_font_size": 15,
+  "icon_theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Macchiato"
+  },
+  "theme": {
+    "mode": "system",
+    "light": "Catppuccin Latte",
+    "dark": "Catppuccin Macchiato"
+  },
+  "minimap": { "show": "never" },
+  "git": { "inline_blame": { "enabled": true } },
+  "autosave": { "after_delay": { "milliseconds": 500 } },
+  "file_types": { "YAML+ERB": [".gitlab-ci.yml"] },
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/.jj",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+    "**/*.d.ts"
+  ]
+}
