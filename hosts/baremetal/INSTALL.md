@@ -1,8 +1,8 @@
 # Fresh NixOS installation with Disko
 
-These instructions install a NixOS flake from a NixOS live environment. Adapt
-the repository URL, host output, user, persistent repository path, hardware
-module path, and target disk to the configuration being installed.
+These instructions install this repository's `baremetal` output for user
+`joel` from a NixOS live environment. Substitute the repository URL and verify
+the machine-specific target disk before starting.
 
 > **Warning:** Disko's `destroy,format,mount` mode erases the target disk in
 > full. This procedure is for a fresh installation, not an in-place migration.
@@ -17,10 +17,10 @@ every disk by path, size, model, and serial number:
 lsblk -d -o PATH,SIZE,MODEL,SERIAL
 ```
 
-Inspect `disko.nix` and set `disko.devices.disk.main.device` to a stable path
-for the intended installation disk. A `/dev/disk/by-id/...` path is preferable
-when it is known; kernel names such as `/dev/nvme0n1` can change when hardware
-is added or reordered.
+Inspect `disko.nix` and verify that `disko.devices.disk.main.device` identifies
+the intended physical disk by model and serial number. The committed
+`/dev/disk/by-id/...` path is specific to this machine and must be changed when
+installing on different hardware.
 
 Clone the configuration into the live environment:
 
@@ -29,10 +29,6 @@ nix-shell -p git
 git clone <repo-url> /tmp/nixos-config
 cd /tmp/nixos-config
 ```
-
-In the commands below, replace `<host>` with the flake's NixOS and Disko output
-name, `<user>` with its normal user, and `<hardware-config-path>` with the host's
-hardware module path relative to the repository.
 
 ## 2. Create the LUKS recovery credential
 
@@ -56,7 +52,7 @@ Build the resolved Disko operation without changing a disk:
 ```bash
 sudo nix --extra-experimental-features 'nix-command flakes' \
   run /tmp/nixos-config#disko -- \
-  --dry-run --flake /tmp/nixos-config#<host>
+  --dry-run --flake /tmp/nixos-config#baremetal
 ```
 
 Review the configured device again. When certain that it is disposable,
@@ -65,7 +61,7 @@ create the encrypted layout and mount it at `/mnt`:
 ```bash
 sudo nix --extra-experimental-features 'nix-command flakes' \
   run /tmp/nixos-config#disko -- \
-  --mode destroy,format,mount --flake /tmp/nixos-config#<host>
+  --mode destroy,format,mount --flake /tmp/nixos-config#baremetal
 ```
 
 Verify the result before installing:
@@ -85,25 +81,24 @@ after the first boot.
 sudo mkdir -p /mnt/etc/nixos
 sudo cp -a /tmp/nixos-config/. /mnt/etc/nixos/
 sudo nixos-generate-config --root /mnt --show-hardware-config \
-  | sudo tee /mnt/etc/nixos/<hardware-config-path> >/dev/null
+  | sudo tee /mnt/etc/nixos/hosts/baremetal/hardware-configuration.nix >/dev/null
 ```
 
 Review the generated module. Confirm that `/`, `/home`, `/nix`, and
 `/.snapshots` use the expected Btrfs subvolumes and that it contains a
-`boot.initrd.luks.devices` entry for the encrypted root partition.
-
-Keep the generated LUKS device name and path, and add TPM2 automatic unlocking
-to that entry:
+`boot.initrd.luks.devices.cryptroot` entry for the encrypted root partition:
 
 ```nix
-boot.initrd.luks.devices."<generated-name>" = {
+boot.initrd.luks.devices."cryptroot" = {
   device = "/dev/disk/by-uuid/<generated-luks-uuid>";
-  crypttabExtraOpts = [ "tpm2-device=auto" ];
 };
 ```
 
-The main host configuration already enables the systemd initrd needed to use
-TPM2 LUKS tokens.
+Keep the generated device UUID, but make sure the attribute name is
+`cryptroot`, matching `disko.nix`. The main host configuration owns the
+machine-independent unlock policy: it enables the systemd initrd and adds
+`tpm2-device=auto`. Do not duplicate that option in the generated hardware
+module.
 
 ## 5. Install and enroll the TPM
 
@@ -112,7 +107,7 @@ Install the selected flake output:
 ```bash
 sudo nixos-install \
   --extra-experimental-features 'nix-command flakes' \
-  --flake /mnt/etc/nixos#<host>
+  --flake /mnt/etc/nixos#baremetal
 ```
 
 Find the encrypted partition in `lsblk -f`, then enroll the target machine's
@@ -140,7 +135,7 @@ Set the normal user's login password before the first boot:
 
 ```bash
 sudo nixos-enter --root /mnt
-passwd <user>
+passwd joel
 exit
 sudo shred -u /tmp/disko-password
 sudo reboot

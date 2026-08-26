@@ -111,11 +111,6 @@
       "provider": "copilot_chat",
       "model": "gpt-5-mini"
     },
-    "default_model": {
-      "enable_thinking": false,
-      "provider": "ollama",
-      "model": "gemma4:latest"
-    },
     "model_parameters": []
   },
   "buffer_font_family": "GeistMono Nerd Font",

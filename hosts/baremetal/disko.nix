@@ -1,7 +1,9 @@
 {
   disko.devices.disk.main = {
     type = "disk";
-    device = "/dev/nvme0n1";
+    # Crucial P3 1 TB, serial 2243E67E472C. Keep the destructive target tied
+    # to the physical drive rather than its probe-order-dependent kernel name.
+    device = "/dev/disk/by-id/nvme-CT1000P3SSD8_2243E67E472C";
 
     content = {
       type = "gpt";

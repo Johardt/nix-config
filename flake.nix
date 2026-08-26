@@ -48,6 +48,7 @@
       apps.${system}.disko = {
         type = "app";
         program = "${disko.packages.${system}.disko}/bin/disko";
+        meta.description = "Apply the baremetal Disko layout";
       };
 
       # Installation-time disk layout. This is intentionally separate from the
@@ -56,7 +57,6 @@
 
       nixosConfigurations.baremetal = nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = { inherit noctalia noctalia-greeter umbriel; };
 
         modules = [
           ./hosts/baremetal/configuration.nix

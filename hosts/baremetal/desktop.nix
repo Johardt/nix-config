@@ -1,5 +1,8 @@
 { config, pkgs, ... }:
 
+let
+  desktop = import ../../shared/desktop.nix;
+in
 {
   # Keep the GNOME session available alongside Umbriel.
   services.xserver.enable = true;
@@ -7,13 +10,8 @@
 
   programs.noctalia-greeter = {
     enable = true;
-    settings.keyboard = {
-      layout = "de";
-      variant = "mac_nodeadkeys";
-      # Match macOS: either Option key selects the third/fourth symbol level.
-      # Caps is remapped by Kanata below, before the XKB keymap is applied.
-      options = "lv3:alt_switch";
-    };
+    # Caps is remapped by Kanata below, before the XKB keymap is applied.
+    settings.keyboard = desktop.keyboard;
   };
 
   programs.umbriel.enable = true;
@@ -62,7 +60,6 @@
   programs.steam.enable = true;
 
   environment.systemPackages = [
-    pkgs.ghostty
     pkgs.xwayland-satellite
   ];
 }

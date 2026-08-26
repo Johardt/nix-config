@@ -1,5 +1,8 @@
 { pkgs, ... }:
 
+let
+  desktop = import ../../shared/desktop.nix;
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -37,9 +40,18 @@
 
   # The generated hardware configuration defines the devices and subvolumes;
   # keep policy such as compression and maintenance here.
-  fileSystems."/".options = [ "compress=zstd" "noatime" ];
-  fileSystems."/home".options = [ "compress=zstd" "noatime" ];
-  fileSystems."/nix".options = [ "compress=zstd" "noatime" ];
+  fileSystems."/".options = [
+    "compress=zstd"
+    "noatime"
+  ];
+  fileSystems."/home".options = [
+    "compress=zstd"
+    "noatime"
+  ];
+  fileSystems."/nix".options = [
+    "compress=zstd"
+    "noatime"
+  ];
 
   # All three mounts live on the same Btrfs filesystem, so scrub it only once.
   services.btrfs.autoScrub = {
@@ -93,10 +105,7 @@
     LC_TIME = "de_DE.UTF-8";
   };
 
-  services.xserver.xkb = {
-    layout = "de";
-    variant = "mac_nodeadkeys";
-  };
+  services.xserver.xkb = desktop.keyboard;
 
   console.keyMap = "de";
 

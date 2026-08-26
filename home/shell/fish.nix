@@ -2,7 +2,6 @@
 
 {
   home.packages = with pkgs; [
-    bat
     eza
   ];
 
@@ -16,7 +15,6 @@
     GOBIN = "${config.home.homeDirectory}/.local/bin";
     CARGO_HOME = "${config.xdg.dataHome}/cargo";
     DOCKER_CONFIG = "${config.xdg.configHome}/docker";
-    NPM_CONFIG_INIT_MODULE = "${config.xdg.configHome}/npm/config/npm-init.js";
     NPM_CONFIG_CACHE = "${config.xdg.cacheHome}/npm";
 
     CLICOLOR = "1";
@@ -36,18 +34,23 @@
     atuin = {
       enable = true;
       enableFishIntegration = true;
+      settings = {
+        filter_mode_shell_up_key_binding = "directory";
+        style = "compact";
+        enter_accept = false;
+        sync.records = true;
+        search.disable_up_key = true;
+        ai.enabled = false;
+      };
     };
 
     fish = {
       enable = true;
 
       shellAliases = {
-        cm = "chezmoi";
         vi = "nvim";
         lg = "lazygit";
-        oc = "opencode";
         wget = "wget --hsts-file=$XDG_DATA_HOME/wget-hsts";
-        pw = "packwiz";
 
         gs = "git status --short";
         gd = "git diff";
@@ -60,7 +63,7 @@
         ll = "eza -la --color=always --group-directories-first --icons";
         la = "eza -a --color=always --group-directories-first --icons";
         lt = "eza -T --color=always --group-directories-first --icons";
-        lh = "eza -la --color=always --group-directories-first --icons -a";
+        lh = "eza -la --color=always --group-directories-first --icons";
         cat = "bat --paging=never";
 
         ".." = "cd ..";
@@ -173,27 +176,6 @@
 
           git --no-pager log --oneline --color=always | fzf --ansi --preview 'git --no-pager show --color=always {1}'
         '';
-
-        kcfg = "kubeconfig-load $argv";
-
-        kubeconfig-load = ''
-          set -l configs ~/.kube/*.yml ~/.kube/*.yaml
-          set -l kubeconfigs
-
-          for kubeconfig in $configs
-            if test -f "$kubeconfig"
-              set --append kubeconfigs "$kubeconfig"
-            end
-          end
-
-          set -gx KUBECONFIG (string join : $kubeconfigs)
-          kubectx
-        '';
-
-        kunset = ''
-          set -gx KUBECONFIG /dev/null
-          echo "KUBECONFIG disabled"
-        '';
       };
     };
 
@@ -205,6 +187,7 @@
     mise = {
       enable = true;
       enableFishIntegration = true;
+      globalConfig.settings.color_theme = "catppuccin";
     };
 
     starship = {
@@ -222,4 +205,8 @@
       ];
     };
   };
+
+  # Atuin creates a regular default config on first launch. Home Manager owns
+  # this path now; account state, encryption keys, and history live elsewhere.
+  xdg.configFile."atuin/config.toml".force = pkgs.lib.mkForce true;
 }

@@ -1,6 +1,7 @@
 { config, pkgs, ... }:
 
 let
+  desktop = import ../shared/desktop.nix;
   extensions = with pkgs.gnomeExtensions; [
     dash-to-dock
     blur-my-shell
@@ -14,13 +15,6 @@ in
     ++ (with pkgs; [
       gnome-extension-manager
       gnome-tweaks
-      bibata-cursors
-      geist-font
-      inter
-      nerd-fonts.adwaita-mono
-      nerd-fonts.geist-mono
-      nerd-fonts.jetbrains-mono
-      papirus-icon-theme
     ]);
 
   programs.vicinae = {
@@ -29,6 +23,8 @@ in
     systemd = {
       enable = true;
       autoStart = true;
+      # GNOME owns Vicinae. Umbriel uses Noctalia as its launcher.
+      target = "gnome-session.target";
     };
 
     settings = {
@@ -62,23 +58,14 @@ in
     "XDG_DATA_DIRS=${config.home.profileDirectory}/share:/run/current-system/sw/share"
   ];
 
-  xdg.mimeApps = {
-    enable = true;
-    defaultApplications = {
-      "text/html" = [ "firefox.desktop" ];
-      "application/xhtml+xml" = [ "firefox.desktop" ];
-      "x-scheme-handler/http" = [ "firefox.desktop" ];
-      "x-scheme-handler/https" = [ "firefox.desktop" ];
-    };
-  };
-
   dconf.settings = {
     "org/gnome/desktop/interface" = {
       gtk-enable-primary-paste = false;
       font-name = "Inter Medium 11";
       document-font-name = "Adwaita Sans 11";
       monospace-font-name = "JetBrainsMono NF 12";
-      cursor-theme = "Bibata-Modern-Classic";
+      cursor-theme = desktop.cursor.theme;
+      cursor-size = desktop.cursor.size;
       icon-theme = "Papirus";
     };
 

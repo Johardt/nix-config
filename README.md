@@ -11,3 +11,9 @@ Rebuild the installed system with:
 ```bash
 nh os switch
 ```
+
+Validate the complete configuration without switching:
+
+```bash
+nix flake check --no-build
+```
