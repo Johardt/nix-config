@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -26,6 +26,10 @@
       extraArgs = "--keep-since 7d --keep 3";
     };
   };
+
+  # Zed extensions may download prebuilt language servers that expect the
+  # conventional Linux dynamic linker rather than Nix store paths.
+  programs.nix-ld.enable = true;
 
   # ---------------------------------------------------------------------------
   # Btrfs

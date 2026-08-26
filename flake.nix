@@ -3,10 +3,20 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    noctalia = {
+      url = "github:noctalia-dev/noctalia";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    nirimod = {
-      url = "github:srinivasr/nirimod";
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    umbriel = {
+      # Umbriel uses git submodules; Nix 2.34 cannot enable those through the
+      # github: fetcher used by the shorter URL form.
+      url = "git+https://github.com/noctalia-dev/umbriel?submodules=1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -21,42 +31,50 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, disko, nirimod, ... }:
-  let
-    system = "x86_64-linux";
-    pkgs-unstable = import nixpkgs-unstable {
-      inherit system;
-      config.allowUnfree = true;
+  outputs =
+    {
+      nixpkgs,
+      home-manager,
+      disko,
+      noctalia,
+      noctalia-greeter,
+      umbriel,
+      ...
+    }:
+    let
+      system = "x86_64-linux";
+    in
+    {
+      apps.${system}.disko = {
+        type = "app";
+        program = "${disko.packages.${system}.disko}/bin/disko";
+      };
+
+      # Installation-time disk layout. This is intentionally separate from the
+      # live NixOS module because the current installation predates this layout.
+      diskoConfigurations.baremetal = import ./hosts/baremetal/disko.nix;
+
+      nixosConfigurations.baremetal = nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit noctalia noctalia-greeter umbriel; };
+
+        modules = [
+          ./hosts/baremetal/configuration.nix
+          noctalia-greeter.nixosModules.default
+          umbriel.nixosModules.default
+
+          home-manager.nixosModules.home-manager
+
+          {
+            home-manager = {
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              extraSpecialArgs = { inherit noctalia umbriel; };
+
+              users.joel = import ./home/joel.nix;
+            };
+          }
+        ];
+      };
     };
-  in {
-    apps.${system}.disko = {
-      type = "app";
-      program = "${disko.packages.${system}.disko}/bin/disko";
-    };
-
-    # Installation-time disk layout. This is intentionally separate from the
-    # live NixOS module because the current installation predates this layout.
-    diskoConfigurations.baremetal = import ./hosts/baremetal/disko.nix;
-
-    nixosConfigurations.baremetal = nixpkgs.lib.nixosSystem {
-      inherit system;
-      specialArgs = { inherit pkgs-unstable nirimod; };
-
-      modules = [
-        ./hosts/baremetal/configuration.nix
-
-        home-manager.nixosModules.home-manager
-
-        {
-          home-manager = {
-            useGlobalPkgs = true;
-            useUserPackages = true;
-            extraSpecialArgs = { inherit pkgs-unstable nirimod; };
-
-            users.joel = import ./home/joel.nix;
-          };
-        }
-      ];
-    };
-  };
 }

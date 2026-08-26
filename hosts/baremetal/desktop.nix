@@ -1,15 +1,43 @@
-{ config, pkgs, pkgs-unstable, ... }:
+{ config, pkgs, ... }:
 
 {
-  # GDM presents both GNOME and Niri as selectable login sessions.
+  # Keep the GNOME session available alongside Umbriel.
   services.xserver.enable = true;
-
-  services.displayManager.gdm.enable = true;
-
   services.desktopManager.gnome.enable = true;
-  programs.niri = {
+
+  programs.noctalia-greeter = {
     enable = true;
-    package = pkgs-unstable.niri;
+    settings.keyboard = {
+      layout = "de";
+      variant = "mac_nodeadkeys";
+      # Match macOS: either Option key selects the third/fourth symbol level.
+      # Caps is remapped by Kanata below, before the XKB keymap is applied.
+      options = "lv3:alt_switch";
+    };
+  };
+
+  programs.umbriel.enable = true;
+
+  # Present Caps as the conventional Hyper chord.  Doing this below XKB makes
+  # it usable by compositors that do not recognize XKB's Mod3/Hyper modifier.
+  services.kanata = {
+    enable = true;
+    keyboards.default = {
+      extraDefCfg = "process-unmapped-keys yes";
+      config = ''
+        (defsrc
+          caps
+        )
+
+        (defalias
+          hyper (multi lsft lctl lalt lmet)
+        )
+
+        (deflayer base
+          @hyper
+        )
+      '';
+    };
   };
 
   # Use the proprietary user-space driver with
@@ -35,7 +63,6 @@
 
   environment.systemPackages = [
     pkgs.ghostty
-    pkgs-unstable.noctalia
     pkgs.xwayland-satellite
   ];
 }

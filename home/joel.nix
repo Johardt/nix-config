@@ -1,10 +1,12 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 let
-  catppuccinBat = variant: pkgs.catppuccin.override {
-    inherit variant;
-    themeList = [ "bat" ];
-  };
+  catppuccinBat =
+    variant:
+    pkgs.catppuccin.override {
+      inherit variant;
+      themeList = [ "bat" ];
+    };
 in
 
 {
@@ -170,7 +172,6 @@ in
 
       pull = {
         rebase = true;
-        ff = "only";
       };
 
       rebase = {
@@ -216,7 +217,11 @@ in
 
   programs.zed-editor = {
     enable = true;
-    extensions = [ "nix" ];
+    extensions = [
+      "nix"
+      "kdl"
+      "toml"
+    ];
     userSettings = builtins.fromJSON (builtins.readFile ./zed-settings.json);
   };
 

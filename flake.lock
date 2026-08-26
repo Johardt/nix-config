@@ -42,26 +42,6 @@
         "type": "github"
       }
     },
-    "nirimod": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1785690854,
-        "narHash": "sha256-taHvAqDjemBHzFYCXjAVD2xZbIdsQxcXXlPq6Ebbio4=",
-        "owner": "srinivasr",
-        "repo": "nirimod",
-        "rev": "7a449c8451bd171d3c1d4281afc61f9d9f3ed86d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "srinivasr",
-        "repo": "nirimod",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1787414105,
@@ -78,19 +58,43 @@
         "type": "github"
       }
     },
-    "nixpkgs-unstable": {
+    "noctalia": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1787498568,
-        "narHash": "sha256-9i/VTdusq/+NM/tz+J1Re+ojkMB8MBf0QshnYfzHz30=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
+        "lastModified": 1787756363,
+        "narHash": "sha256-RBrL4c6CBQnxoB63pYHIS1PtaDB/YqJ9Tilej8cxp1A=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia",
+        "rev": "395a81e4afbd719ccdfba84f6b83e139e865a85c",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
+        "owner": "noctalia-dev",
+        "repo": "noctalia",
+        "type": "github"
+      }
+    },
+    "noctalia-greeter": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787482410,
+        "narHash": "sha256-R32LF+S4NnmJwSnzt5xKjb15RjYemb/ZZRnDnP5lxfs=",
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
+        "rev": "5956c6f40249b2837bb260d25ea3953a2631fbdc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "noctalia-dev",
+        "repo": "noctalia-greeter",
         "type": "github"
       }
     },
@@ -98,9 +102,32 @@
       "inputs": {
         "disko": "disko",
         "home-manager": "home-manager",
-        "nirimod": "nirimod",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-unstable": "nixpkgs-unstable"
+        "noctalia": "noctalia",
+        "noctalia-greeter": "noctalia-greeter",
+        "umbriel": "umbriel"
+      }
+    },
+    "umbriel": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787756277,
+        "narHash": "sha256-ee7XuPW2FSu9nyFlbN5pIGJiqACtqL+Adn6S4Zl6t7k=",
+        "ref": "refs/heads/main",
+        "rev": "491db936665466a835b926559977b540c17e9f7b",
+        "revCount": 580,
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/noctalia-dev/umbriel"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "https://github.com/noctalia-dev/umbriel"
       }
     }
   },
