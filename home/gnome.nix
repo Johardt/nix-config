@@ -96,7 +96,7 @@ in
     "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/vicinae" = {
       name = "Vicinae";
       command = "vicinae toggle";
-      binding = "<Alt>space";
+      binding = "<Super>space";
     };
 
     "org/gnome/desktop/wm/keybindings" = {

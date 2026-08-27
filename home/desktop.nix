@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   imports = [
@@ -9,6 +9,7 @@
   home.packages = with pkgs; [
     atuin-desktop
     bibata-cursors
+    chromium
     geist-font
     inter
     nerd-fonts.adwaita-mono
@@ -17,9 +18,44 @@
     papirus-icon-theme
     podman-desktop
     prismlauncher
+    discord
+    adwsteamgtk
   ];
 
   home.sessionVariables.TERMINAL = "ghostty";
+
+  # Chromium uses these URL/profile-derived IDs for native Wayland app windows.
+  # Matching the desktop file names lets GNOME associate the windows with the
+  # friendly names and icons below instead of treating them as unknown apps.
+  xdg.desktopEntries."chrome-mail.proton.me__u1_inbox-Default" = {
+    name = "Proton Mail";
+    genericName = "Email Client";
+    comment = "Open Proton Mail";
+    exec = "${pkgs.chromium}/bin/chromium --ozone-platform=wayland --app=https://mail.proton.me/u/1/inbox --user-data-dir=${config.xdg.dataHome}/proton-mail-pwa";
+    icon = "proton-mail";
+    terminal = false;
+    categories = [
+      "Network"
+      "Email"
+    ];
+    settings = {
+      StartupNotify = "true";
+    };
+  };
+
+  xdg.desktopEntries."chrome-chatgpt.com__-Default" = {
+    name = "ChatGPT";
+    genericName = "AI Assistant";
+    comment = "Open ChatGPT";
+    exec = "${pkgs.chromium}/bin/chromium --ozone-platform=wayland --app=https://chatgpt.com/ --user-data-dir=${config.xdg.dataHome}/chatgpt-pwa";
+    icon = "${./assets/chatgpt.svg}";
+    terminal = false;
+    categories = [
+      "Network"
+      "Utility"
+    ];
+    settings.StartupNotify = "true";
+  };
 
   xdg.terminal-exec = {
     enable = true;
@@ -51,13 +87,12 @@
     settings = {
       theme = "dark:Catppuccin Macchiato,light:Catppuccin Latte";
       font-family = "GeistMono Nerd Font";
-      font-size = 13;
+      font-size = 12;
       font-feature = "calt, liga, dlig";
       cursor-style = "bar";
 
       window-padding-x = 8;
       window-padding-y = 8;
-      window-height = 33;
       window-width = 118;
       confirm-close-surface = false;
       cursor-click-to-move = true;
