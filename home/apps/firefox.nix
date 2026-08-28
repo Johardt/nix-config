@@ -1,6 +1,11 @@
 { ... }:
 
 {
+  # Adopt the existing profile registry. The host-specific profile path is
+  # declared by the NixOS host module, so replacing this metadata file does not
+  # replace or migrate any profile data.
+  home.file.".config/mozilla/firefox/profiles.ini".force = true;
+
   # Firefox itself and its portable profile behavior are managed together.
   programs.firefox = {
     enable = true;

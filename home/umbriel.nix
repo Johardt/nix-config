@@ -44,6 +44,11 @@ in
         corner_radius = 12;
       };
 
+      # Umbriel must take ownership of the display before Noctalia can create
+      # its wallpaper layer. Use a dark color sampled from the wallpaper for
+      # that brief handoff instead of the light palette's near-white default.
+      colors.background = "#18252CFF";
+
       # Noctalia regenerates this file whenever the palette changes. It is
       # included before the main config, so explicitly configured values below
       # continue to take precedence over theme values.

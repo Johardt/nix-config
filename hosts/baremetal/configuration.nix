@@ -64,8 +64,50 @@ in
   # Boot
   # ---------------------------------------------------------------------------
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # Boot the current generation immediately during normal startup. Holding
+  # Space while the firmware hands off to systemd-boot still reveals the menu
+  # for selecting an older generation.
+  boot.loader = {
+    timeout = 0;
+
+    systemd-boot = {
+      enable = true;
+      configurationLimit = 10;
+      consoleMode = "max";
+      editor = false;
+    };
+
+    efi.canTouchEfiVariables = true;
+  };
+
+  # Cover routine startup and shutdown output with the firmware-logo splash.
+  # Errors remain available through the journal and by pressing Escape while
+  # Plymouth is active.
+  boot.plymouth = {
+    enable = true;
+    theme = "bgrt";
+  };
+
+  boot.consoleLogLevel = 3;
+  boot.initrd.verbose = false;
+  # Plymouth otherwise starts on simpledrm and only becomes visible once the
+  # NVIDIA DRM device appears near the end of boot. Load the graphics stack in
+  # the initrd so Plymouth can render on the real display from early startup.
+  boot.initrd.kernelModules = [
+    "nvidia"
+    "nvidia_modeset"
+    "nvidia_uvm"
+    "nvidia_drm"
+  ];
+  boot.kernelParams = [
+    "quiet"
+    # Unlike "auto", false does not reveal the unit-status wall when startup
+    # or shutdown takes longer than systemd's status timeout.
+    "systemd.show_status=false"
+    "rd.systemd.show_status=false"
+    "udev.log_level=3"
+    "rd.udev.log_level=3"
+  ];
 
   # Required for unlocking LUKS2 volumes through enrolled TPM2 tokens. The
   # generated hardware module supplies the machine-specific LUKS device.
