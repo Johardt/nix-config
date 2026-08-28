@@ -57,6 +57,21 @@ in
     settings.StartupNotify = "true";
   };
 
+  xdg.desktopEntries."chrome-web.whatsapp.com__-Default" = {
+    name = "WhatsApp";
+    genericName = "Instant Messenger";
+    comment = "Open WhatsApp Web";
+    exec = "${pkgs.chromium}/bin/chromium --ozone-platform=wayland --app=https://web.whatsapp.com/ --user-data-dir=${config.xdg.dataHome}/whatsapp-pwa";
+    icon = "whatsapp";
+    terminal = false;
+    categories = [
+      "Network"
+      "InstantMessaging"
+      "Chat"
+    ];
+    settings.StartupNotify = "true";
+  };
+
   xdg.desktopEntries.cider = {
     name = "Cider";
     genericName = "Music Player";

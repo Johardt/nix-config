@@ -23,6 +23,7 @@
     ripgrep
     tree
     wget
+    fastfetch
     biome
   ];
 
