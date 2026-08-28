@@ -11,6 +11,11 @@
       config_version = 13;
 
       bar.default = {
+        start = [
+          "launcher"
+          "workspaces"
+          "active_window"
+        ];
         center = [
           "date"
           "notifications"

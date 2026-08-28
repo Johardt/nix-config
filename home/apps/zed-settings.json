@@ -11,14 +11,8 @@
     "dock": "left"
   },
   "collaboration_panel": { "dock": "right" },
+  "middle_click_paste": false,
   "ui_font_family": ".ZedSans",
-  "context_servers": {
-    "mcp-server-context7": {
-      "enabled": true,
-      "remote": false,
-      "settings": {}
-    }
-  },
   "languages": {
     "TypeScript": {
       "language_servers": [
@@ -107,13 +101,7 @@
     "button": true,
     "dock": "right",
     "tool_permissions": { "default": "allow" },
-    "default_profile": "write",
-    "profiles": {},
-    "inline_assistant_model": {
-      "provider": "copilot_chat",
-      "model": "gpt-5-mini"
-    },
-    "model_parameters": []
+    "default_profile": "write"
   },
   "buffer_font_family": "GeistMono Nerd Font",
   "buffer_font_fallbacks": ["Symbols Nerd Font"],

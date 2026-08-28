@@ -17,6 +17,7 @@
     nerd-fonts.adwaita-mono
     nerd-fonts.geist-mono
     nerd-fonts.jetbrains-mono
+    nerd-fonts.symbols-only
     papirus-icon-theme
     podman-desktop
     prismlauncher
@@ -24,6 +25,7 @@
     adwsteamgtk
     unityhub
     appimage-run
+    opencode-desktop
   ];
 
   home.sessionVariables.TERMINAL = "ghostty";

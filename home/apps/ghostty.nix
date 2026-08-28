@@ -17,6 +17,7 @@
       window-width = 118;
       confirm-close-surface = false;
       cursor-click-to-move = true;
+      copy-on-select = false;
       unfocused-split-opacity = 0.8;
 
       shell-integration = "detect";
@@ -25,6 +26,8 @@
       keybind = [
         "alt+left=text:\\x1bb"
         "alt+right=text:\\x1bf"
+        "super+c=copy_to_clipboard"
+        "super+v=paste_from_clipboard"
         "super+left=text:\\x01"
         "super+right=text:\\x05"
         "super+t=new_tab"

@@ -37,6 +37,7 @@ in
         mod_key = "Super";
         xwayland = true;
         show_cheatsheet = false;
+        focus_on_activate = true;
       };
 
       appearance = {
@@ -45,8 +46,8 @@ in
       };
 
       # Umbriel must take ownership of the display before Noctalia can create
-      # its wallpaper layer. Use a dark color sampled from the wallpaper for
-      # that brief handoff instead of the light palette's near-white default.
+      # its wallpaper layer. Use a dark color for that brief handoff instead
+      # of the light palette's near-white default.
       colors.background = "#18252CFF";
 
       # Noctalia regenerates this file whenever the palette changes. It is
@@ -75,6 +76,10 @@ in
 
       keybinds = {
         "Super+Space" = "spawn:noctalia msg panel-toggle launcher";
+        "Super+Shift+V" = {
+          action = "spawn:noctalia msg panel-toggle clipboard";
+          repeat = false;
+        };
         "Super+Shift+O" = "cheatsheet-toggle";
         "Super+Q" = "window-close";
 
@@ -86,7 +91,8 @@ in
         "Super+J" = "window-focus-down";
         "Super+K" = "window-focus-up";
         "Super+L" = "window-focus-right";
-        "Super+F" = "window-toggle-maximize-to-edges";
+        # Keep Super+F available for application-level Find, as on macOS.
+        "Ctrl+Super+F" = "window-toggle-maximize-to-edges";
 
         "Ctrl+Shift+Super+1" = "workspace-switch:1";
         "Ctrl+Shift+Super+2" = "workspace-switch:2";
@@ -123,7 +129,7 @@ in
           repeat = false;
         };
         "Ctrl+Shift+Super+Z" = {
-          action = "spawn:zed";
+          action = "spawn:zeditor";
           repeat = false;
         };
         "Ctrl+Shift+Super+E" = {

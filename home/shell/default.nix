@@ -23,6 +23,7 @@
     ripgrep
     tree
     wget
+    biome
   ];
 
   programs.bash.enable = true;
