@@ -26,6 +26,7 @@
     unityhub
     appimage-run
     opencode-desktop
+    gimp
   ];
 
   home.sessionVariables.TERMINAL = "ghostty";

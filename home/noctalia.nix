@@ -101,6 +101,7 @@
 
       shell = {
         app_icon_color = "secondary";
+        avatar_path = toString ./assets/face.png;
         font_family = "Adwaita Sans";
         polkit_agent = true;
         settings_show_advanced = false;
@@ -126,6 +127,8 @@
           ];
         };
       };
+
+      wallpaper.directory = toString ./assets/wallpapers;
 
       widget = {
         bluetooth.enabled = false;
