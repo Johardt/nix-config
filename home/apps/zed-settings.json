@@ -7,7 +7,9 @@
   "auto_update": false,
   "vim_mode": true,
   "cli_default_open_behavior": "existing_window",
-  "outline_panel": { "dock": "left" },
+  "outline_panel": {
+    "dock": "left"
+  },
   "collaboration_panel": { "dock": "right" },
   "ui_font_family": ".ZedSans",
   "context_servers": {
@@ -124,8 +126,8 @@
   },
   "theme": {
     "mode": "system",
-    "light": "Catppuccin Latte",
-    "dark": "Catppuccin Macchiato"
+    "light": "Noctalia Light",
+    "dark": "Noctalia Dark"
   },
   "minimap": { "show": "never" },
   "git": { "inline_blame": { "enabled": true } },

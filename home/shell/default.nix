@@ -1,13 +1,5 @@
 { pkgs, ... }:
 
-let
-  catppuccinBat =
-    variant:
-    pkgs.catppuccin.override {
-      inherit variant;
-      themeList = [ "bat" ];
-    };
-in
 {
   imports = [
     ./fish.nix
@@ -40,20 +32,14 @@ in
     config = {
       italic-text = "always";
       style = "plain";
-      theme = "auto:system";
-      theme-dark = "Catppuccin Macchiato";
-      theme-light = "Catppuccin Latte";
-    };
-    themes = {
-      "Catppuccin Latte".src = "${catppuccinBat "latte"}/bat";
-      "Catppuccin Macchiato".src = "${catppuccinBat "macchiato"}/bat";
+      theme = "noctalia";
     };
   };
 
   programs.helix = {
     enable = true;
     settings = {
-      theme = "catppuccin_macchiato";
+      theme = "noctalia";
       editor = {
         line-number = "relative";
         cursor-shape = {

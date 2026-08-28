@@ -1,5 +1,4 @@
 {
-  noctalia,
   pkgs,
   umbriel,
   ...
@@ -12,11 +11,8 @@ in
   # Umbriel and its shell are intentionally isolated from shared desktop and
   # GNOME configuration.
   imports = [
-    noctalia.homeModules.default
     umbriel.homeModules.default
   ];
-
-  programs.noctalia.enable = true;
 
   # GNOME starts IBus through its session target. In Umbriel, replace the
   # generic XIM autostart entry with IBus's Wayland UI, which owns the daemon.
@@ -45,10 +41,13 @@ in
 
       appearance = {
         border_width = 4;
-        border_focused = "#7fc8ffff";
-        border_unfocused = "#505050ff";
         corner_radius = 12;
       };
+
+      # Noctalia regenerates this file whenever the palette changes. It is
+      # included before the main config, so explicitly configured values below
+      # continue to take precedence over theme values.
+      include.files = [ "noctalia.toml" ];
 
       layout = {
         mode = "scrolling";

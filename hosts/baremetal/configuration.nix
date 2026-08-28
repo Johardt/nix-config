@@ -148,10 +148,11 @@ in
   # Programs that need system-level configuration
   # ---------------------------------------------------------------------------
 
-  programs.firefox = {
-    enable = true;
-    # Use the macOS-style Command/Super modifier for Firefox accelerators.
-    preferences."ui.key.accelKey" = 224;
+  home-manager.users.joel.programs.firefox.profiles.default = {
+    # Keep using the existing profile on this host.
+    path = "e3ifv08l.default";
+    # This keyboard maps its Command-style modifier to Super.
+    settings."ui.key.accelKey" = 224;
   };
   programs.fish.enable = true;
 
