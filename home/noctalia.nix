@@ -1,10 +1,13 @@
-{ noctalia, ... }:
+{ noctalia, pkgs-unstable, ... }:
 
 {
   imports = [ noctalia.homeModules.default ];
 
   programs.noctalia = {
     enable = true;
+    # Noctalia v5 from nixpkgs-unstable. This is intentionally `noctalia`,
+    # not the legacy Quickshell-based `noctalia-shell` package.
+    package = pkgs-unstable.noctalia;
     # Keep this sparse: unspecified values continue to follow Noctalia's
     # defaults, while the choices made in the settings UI are reproducible.
     settings = {

@@ -25,6 +25,12 @@
     wget
     fastfetch
     biome
+    bun
+    mise
+    zip
+    unzip
+    _7zip-zstd
+    dotnet-runtime
   ];
 
   programs.bash.enable = true;

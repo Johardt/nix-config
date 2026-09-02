@@ -27,6 +27,8 @@
     appimage-run
     opencode-desktop
     gimp
+    protontricks
+    winetricks
   ];
 
   home.sessionVariables.TERMINAL = "ghostty";

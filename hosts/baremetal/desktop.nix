@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, pkgs-unstable, ... }:
 
 let
   desktop = import ../../shared/desktop.nix;
@@ -6,10 +6,22 @@ in
 {
   # Keep the GNOME session available alongside Umbriel.
   services.xserver.enable = true;
+  services.xserver.excludePackages = with pkgs; [
+    xterm
+  ];
   services.desktopManager.gnome.enable = true;
+  environment.gnome.excludePackages = with pkgs; [
+    gnome-music
+    gnome-console
+    gnome-system-monitor
+    epiphany
+  ];
 
   programs.noctalia-greeter = {
     enable = true;
+    # Use the nixpkgs-unstable package, alongside Noctalia v5. The Git input
+    # remains responsible for the NixOS module and its configuration options.
+    package = pkgs-unstable.noctalia-greeter;
     # Caps is remapped by Kanata below, before the XKB keymap is applied.
     settings.keyboard = desktop.keyboard;
   };

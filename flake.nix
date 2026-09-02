@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+
     noctalia = {
       url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -34,6 +36,7 @@
   outputs =
     {
       nixpkgs,
+      nixpkgs-unstable,
       home-manager,
       disko,
       noctalia,
@@ -43,6 +46,7 @@
     }:
     let
       system = "x86_64-linux";
+      pkgs-unstable = nixpkgs-unstable.legacyPackages.${system};
     in
     {
       apps.${system}.disko = {
@@ -57,6 +61,7 @@
 
       nixosConfigurations.baremetal = nixpkgs.lib.nixosSystem {
         inherit system;
+        specialArgs = { inherit pkgs-unstable; };
 
         modules = [
           ./hosts/baremetal/configuration.nix
@@ -69,7 +74,9 @@
             home-manager = {
               useGlobalPkgs = true;
               useUserPackages = true;
-              extraSpecialArgs = { inherit noctalia umbriel; };
+              extraSpecialArgs = {
+                inherit noctalia umbriel pkgs-unstable;
+              };
 
               users.joel = import ./home/joel.nix;
             };
