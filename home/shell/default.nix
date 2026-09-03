@@ -30,7 +30,7 @@
     zip
     unzip
     _7zip-zstd
-    dotnet-runtime
+    dig
   ];
 
   programs.bash.enable = true;

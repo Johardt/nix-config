@@ -1,4 +1,9 @@
-{ config, pkgs, pkgs-unstable, ... }:
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
 
 let
   desktop = import ../../shared/desktop.nix;
@@ -67,6 +72,7 @@ in
   # Restore them after uaccess so Kanata's dynamic user retains group access.
   services.udev.extraRules = ''
     SUBSYSTEM=="misc", KERNEL=="uinput", RUN+="${pkgs.acl}/bin/setfacl -m g::rw /dev/uinput"
+    SUBSYSTEM=="hidraw", KERNEL=="hidraw*", GROUP="input", MODE="0660"
   '';
 
   # Use the proprietary user-space driver with

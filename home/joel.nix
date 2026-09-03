@@ -1,5 +1,8 @@
-{ ... }:
+{ pkgs, ... }:
 
+let
+  dotnet = pkgs.dotnetCorePackages.sdk_10_0;
+in
 {
   imports = [
     ./desktop.nix
@@ -9,6 +12,9 @@
   home.username = "joel";
   home.homeDirectory = "/home/joel";
   home.stateVersion = "26.05";
+  home.packages = [ dotnet ];
+
+  home.sessionVariables.DOTNET_ROOT = "${dotnet.unwrapped}/share/dotnet";
 
   programs.ssh = {
     enable = true;

@@ -181,7 +181,9 @@ in
     description = "Joel";
     shell = pkgs.fish;
     extraGroups = [
+      "input"
       "networkmanager"
+      "uinput"
       "wheel"
     ];
   };

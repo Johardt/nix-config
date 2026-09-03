@@ -72,6 +72,7 @@ in
           follows_mouse = true;
           follows_mouse_max_scroll = 0.33;
         };
+        middle_click_paste = false;
       };
 
       keybinds = {
