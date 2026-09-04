@@ -6,8 +6,36 @@
 
 let
   desktop = import ../shared/desktop.nix;
+  launchOrFocus = pkgs.writeShellScriptBin "umbriel-launch-or-focus" ''
+    set -eu
+
+    if [ "$#" -lt 2 ]; then
+      echo "usage: umbriel-launch-or-focus APP_ID_REGEX COMMAND [ARGUMENTS...]" >&2
+      exit 2
+    fi
+
+    app_id_regex=$1
+    shift
+    window_id=$(
+      umbriel windows --json |
+        ${pkgs.jq}/bin/jq -r --arg app_id_regex "$app_id_regex" '
+          [ .[] | select(.app_id | test($app_id_regex)) ]
+          | sort_by(.focused)
+          | reverse
+          | .[0].id // empty
+        '
+    )
+
+    if [ -n "$window_id" ]; then
+      exec umbriel msg "window-focus:$window_id"
+    fi
+
+    exec "$@"
+  '';
 in
 {
+  home.packages = [ launchOrFocus ];
+
   # Umbriel and its shell are intentionally isolated from shared desktop and
   # GNOME configuration.
   imports = [
@@ -73,6 +101,10 @@ in
           default_width_fraction = 0.5;
         };
       };
+
+      # Keep the numbered workspaces available so window rules can target
+      # workspace 2 even when it is otherwise empty.
+      output."DP-1".workspaces = 3;
 
       animation.scratchpad = {
         enabled = true;
@@ -148,23 +180,23 @@ in
         "Ctrl+Shift+Super+F8" = "window-move-to-workspace:8";
         "Ctrl+Shift+Super+F9" = "window-move-to-workspace:9";
         "Ctrl+Shift+Super+P" = {
-          action = "spawn:1password";
+          action = "spawn:umbriel-launch-or-focus '^(1password|1Password|com[.]1password[.]1Password)$' 1password";
           repeat = false;
         };
         "Ctrl+Shift+Super+Return" = {
-          action = "spawn:ghostty";
+          action = "spawn:umbriel-launch-or-focus '^com[.]mitchellh[.]ghostty$' ghostty";
           repeat = false;
         };
         "Ctrl+Shift+Super+B" = {
-          action = "spawn:firefox";
+          action = "spawn:umbriel-launch-or-focus '^firefox$' firefox";
           repeat = false;
         };
         "Ctrl+Shift+Super+Z" = {
-          action = "spawn:zeditor";
+          action = "spawn:umbriel-launch-or-focus '^dev[.]zed[.]Zed$' zeditor";
           repeat = false;
         };
         "Ctrl+Shift+Super+E" = {
-          action = "spawn:nautilus";
+          action = "spawn:umbriel-launch-or-focus '^org[.]gnome[.]Nautilus$' nautilus";
           repeat = false;
         };
 
@@ -193,6 +225,18 @@ in
             y = 32;
             anchor = "bottom_right";
           };
+        }
+        {
+          match.app_id = "^firefox$";
+          default_workspace = 1;
+        }
+        {
+          match.app_id = "^com[.]mitchellh[.]ghostty$";
+          default_workspace = 2;
+        }
+        {
+          match.app_id = "^dev[.]zed[.]Zed$";
+          default_workspace = 2;
         }
         {
           # Prefer semantic hints supplied by native clients and Proton over
