@@ -37,12 +37,22 @@ in
         mod_key = "Super";
         xwayland = true;
         show_cheatsheet = false;
-        focus_on_activate = true;
+        # focus_on_activate = true;
       };
 
       appearance = {
         border_width = 4;
         corner_radius = 12;
+        blur = {
+          enabled = true;
+          optimized = true;
+          passes = 3;
+          radius = 3;
+          noise = 0.02;
+          brightness = 0.9;
+          contrast = 0.9;
+          saturation = 1.1;
+        };
       };
 
       # Umbriel must take ownership of the display before Noctalia can create
@@ -64,6 +74,13 @@ in
         };
       };
 
+      animation.scratchpad = {
+        enabled = true;
+        blur = true;
+        dim = 0.35;
+        scale = 0.7;
+      };
+
       input = {
         keyboard = desktop.keyboard;
         touchpad.natural_scroll = true;
@@ -82,7 +99,13 @@ in
           repeat = false;
         };
         "Super+Shift+O" = "cheatsheet-toggle";
+        "Super+O" = "overview-toggle";
         "Super+Q" = "window-close";
+
+        # Keep frequently used windows nearby without dedicating a workspace.
+        "Super+Grave" = "scratchpad-toggle";
+        "Super+Shift+Grave" = "window-toggle-scratchpad";
+        "Super+Tab" = "scratchpad-focus-next";
 
         "Super+Left" = "window-focus-left";
         "Super+Down" = "window-focus-down";
@@ -93,8 +116,17 @@ in
         "Super+K" = "window-focus-up";
         "Super+L" = "window-focus-right";
         # Keep Super+F available for application-level Find, as on macOS.
-        "Ctrl+Super+F" = "window-toggle-maximize-to-edges";
 
+        # Column / Window altering commands (Shift+Super)
+        "Shift+Super+F" = "window-toggle-maximize-to-edges";
+        "Shift+Super+Up" = "window-set-width:1";
+        "Shift+Super+Down" = "window-set-width:0.5";
+        "Shift+Super+Left" = "column-move-left";
+        "Shift+Super+Right" = "column-move-right";
+
+        # Workspace-control commands (Hyper)
+        "Ctrl+Shift+Super+Down" = "workspace-next";
+        "Ctrl+Shift+Super+Up" = "workspace-previous";
         "Ctrl+Shift+Super+1" = "workspace-switch:1";
         "Ctrl+Shift+Super+2" = "workspace-switch:2";
         "Ctrl+Shift+Super+3" = "workspace-switch:3";
@@ -104,7 +136,6 @@ in
         "Ctrl+Shift+Super+7" = "workspace-switch:7";
         "Ctrl+Shift+Super+8" = "workspace-switch:8";
         "Ctrl+Shift+Super+9" = "workspace-switch:9";
-
         # Hyper already contains Shift, so F1-F9 provide a distinct set for
         # moving the focused window while the number row switches workspaces.
         "Ctrl+Shift+Super+F1" = "window-move-to-workspace:1";
@@ -116,12 +147,11 @@ in
         "Ctrl+Shift+Super+F7" = "window-move-to-workspace:7";
         "Ctrl+Shift+Super+F8" = "window-move-to-workspace:8";
         "Ctrl+Shift+Super+F9" = "window-move-to-workspace:9";
-
         "Ctrl+Shift+Super+P" = {
           action = "spawn:1password";
           repeat = false;
         };
-        "Ctrl+Shift+Super+T" = {
+        "Ctrl+Shift+Super+Return" = {
           action = "spawn:ghostty";
           repeat = false;
         };
@@ -140,6 +170,49 @@ in
 
         "Print" = "spawn:noctalia msg screenshot-region";
       };
+
+      window_rule = [
+        {
+          # Noctalia's translucent windows should reveal a blurred backdrop.
+          blur = true;
+          blur_optimized = true;
+        }
+        {
+          match.app_id = "^dev.noctalia.Noctalia$";
+          default_floating = true;
+          default_width = 0.5;
+          default_height = 0.625;
+        }
+        {
+          match.app_id = "^dev.noctalia.UmbrielSharePicker$";
+          default_floating = true;
+          default_width = 0.4;
+          default_height = 0.42;
+          default_position = {
+            x = 32;
+            y = 32;
+            anchor = "bottom_right";
+          };
+        }
+        {
+          # Prefer semantic hints supplied by native clients and Proton over
+          # brittle title or application-name matching.
+          match.content_type = "game";
+          default_fullscreen = true;
+          vrr = "always";
+          tearing = true;
+          hdr = "fullscreen";
+        }
+      ];
+
+      layer_rule = [
+        {
+          match.namespace = ''^noctalia-(bar-[^"]+|notification|dock|panel|attached-panel|osd)$'';
+          blur = true;
+          blur_ignore_alpha = 0.5;
+          blur_optimized = false;
+        }
+      ];
     };
   };
 }
