@@ -104,7 +104,7 @@ in
 
       # Keep the numbered workspaces available so window rules can target
       # workspace 2 even when it is otherwise empty.
-      output."DP-1".workspaces = 3;
+      # output."DP-1".workspaces = 3;
 
       animation.scratchpad = {
         enabled = true;
@@ -148,9 +148,8 @@ in
         "Super+K" = "window-focus-up";
         "Super+L" = "window-focus-right";
         # Keep Super+F available for application-level Find, as on macOS.
-
         # Column / Window altering commands (Shift+Super)
-        "Shift+Super+F" = "window-toggle-maximize-to-edges";
+        "Shift+Super+F" = "window-toggle-fullscreen";
         "Shift+Super+Up" = "window-set-width:1";
         "Shift+Super+Down" = "window-set-width:0.5";
         "Shift+Super+Left" = "column-move-left";

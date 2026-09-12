@@ -19,7 +19,8 @@
       # Umbriel uses git submodules; Nix 2.34 cannot enable those through the
       # github: fetcher used by the shorter URL form.
       url = "git+https://github.com/noctalia-dev/umbriel?submodules=1";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Umbriel tracks wlroots more closely than the release channel does.
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     disko = {

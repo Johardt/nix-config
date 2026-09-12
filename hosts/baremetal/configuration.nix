@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
 
 let
   desktop = import ../../shared/desktop.nix;
@@ -116,9 +120,9 @@ in
     "tpm2-device=auto"
   ];
 
-  # Linux 7.2 does not currently compile with NVIDIA 595. 7.1 is the newest
-  # kernel in this nixpkgs snapshot with a working NVIDIA open kernel module.
-  boot.kernelPackages = pkgs.linuxPackages_7_1;
+  # nixos-26.05 currently pairs Linux 7.2 with NVIDIA 595.71.05, which does not
+  # compile against that kernel. Unstable provides the newer compatible driver.
+  boot.kernelPackages = pkgs-unstable.linuxPackages_7_2;
 
   # ---------------------------------------------------------------------------
   # Networking

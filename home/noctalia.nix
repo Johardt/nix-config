@@ -87,6 +87,7 @@
             members = [
               "launcher"
               "bar"
+              "wallhaven"
             ];
             opacity = 1.0;
             padding = 6.0;
@@ -172,7 +173,15 @@
 
       plugin_settings."noctalia/umbriel-companion".panel_placement = "floating";
 
-      plugins.enabled = [ "noctalia/umbriel-companion" ];
+      plugin_settings."noctalia/wallhaven" = {
+        browser_open_near_click = true;
+        browser_placement = "floating";
+      };
+
+      plugins.enabled = [
+        "noctalia/umbriel-companion"
+        "noctalia/wallhaven"
+      ];
 
       shell = {
         app_icon_color = "secondary";
@@ -185,13 +194,16 @@
         panel = {
           control_center_placement = "floating";
           open_near_click_control_center = true;
+          open_near_click_session = true;
           open_near_click_wallpaper = true;
+          session_placement = "floating";
+          session_position = "center";
           wallpaper_placement = "floating";
         };
       };
 
       theme = {
-        builtin = "Catppuccin";
+        builtin = "Nord";
         community_palette = "ADW";
         mode = "auto";
         source = "builtin";
@@ -222,13 +234,17 @@
       wallpaper = {
         directory = toString ./assets/wallpapers;
         transition_on_startup = true;
-        default.path = toString ./assets/wallpapers/rosepine/point-overhead.jpg;
-        last.path = toString ./assets/wallpapers/rosepine/point-overhead.jpg;
-        monitors.DP-1.path = toString ./assets/wallpapers/rosepine/point-overhead.jpg;
+        default.path = toString ./assets/wallpapers/rosepine/ANVTM.jpg;
+        last.path = toString ./assets/wallpapers/rosepine/ANVTM.jpg;
+        monitors.DP-1.path = toString ./assets/wallpapers/rosepine/ANVTM.jpg;
       };
 
       widget = {
-        bar.type = "noctalia/umbriel-companion:bar";
+        bar = {
+          enable_scroll = false;
+          scroll_cycles_layout = false;
+          type = "noctalia/umbriel-companion:bar";
+        };
         battery.enabled = false;
         bluetooth.enabled = false;
         brightness.enabled = false;
@@ -248,6 +264,7 @@
           hidden = [ "/org/ayatana/NotificationItem/ibus_ui_gtk3" ];
         };
         volume.show_label = false;
+        wallhaven.type = "noctalia/wallhaven:wallhaven";
         wallpaper.enabled = false;
       };
     };
