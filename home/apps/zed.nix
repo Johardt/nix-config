@@ -54,6 +54,7 @@
         bindings = {
           "super-n" = "workspace::NewFile";
           "super-shift-n" = "workspace::NewWindow";
+          "super-ctrl-f" = "workspace::NewSearch";
           "super-o" = "workspace::Open";
           "super-s" = "workspace::Save";
           "super-shift-s" = "workspace::SaveAs";

@@ -26,7 +26,6 @@
       adwsteamgtk
       unityhub
       appimage-run
-      opencode-desktop
       gimp
       protontricks
       winetricks

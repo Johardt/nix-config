@@ -12,7 +12,7 @@
     # selected in the UI here so they are part of the standard configuration
     # rather than runtime overrides.
     settings = {
-      config_version = 13;
+      config_version = 14;
 
       bar.default = {
         background_opacity = 0.0;
@@ -124,6 +124,7 @@
       dock = {
         auto_hide = true;
         enabled = true;
+        magnification = false;
         pinned = [
           "org.gnome.Nautilus"
           "firefox"
@@ -132,6 +133,8 @@
         ];
         reserve_space = false;
       };
+
+      location.address = "Langenfeld, Rheinland";
 
       lockscreen_widgets = {
         enabled = false;
@@ -176,6 +179,7 @@
       plugin_settings."noctalia/wallhaven" = {
         browser_open_near_click = true;
         browser_placement = "floating";
+        download_dir = "/home/joel/Downloads";
       };
 
       plugins.enabled = [
@@ -222,12 +226,6 @@
             "zed"
             "bat"
           ];
-          # Noctalia 5.0.0's bundled template still uses Umbriel's old color
-          # keys. Keep the palette integration while the two projects converge.
-          user.umbriel = {
-            input_path = toString ./assets/umbriel.toml;
-            output_path = "$XDG_CONFIG_HOME/umbriel/noctalia.toml";
-          };
         };
       };
 

@@ -104,7 +104,7 @@ in
 
       # Keep the numbered workspaces available so window rules can target
       # workspace 2 even when it is otherwise empty.
-      # output."DP-1".workspaces = 3;
+      output."DP-1".min_workspaces = 3;
 
       animation.scratchpad = {
         enabled = true;
@@ -250,10 +250,11 @@ in
 
       layer_rule = [
         {
-          match.namespace = ''^noctalia-(bar-[^"]+|notification|dock|panel|attached-panel|osd)$'';
+          match.namespace = ''^noctalia-(bar-[^"]+|notification|dock|panel|attached-panel|osd|desktop-widget-[^"]*)$'';
           blur = true;
           blur_ignore_alpha = 0.5;
           blur_optimized = false;
+          blur_popups = true;
         }
       ];
     };
