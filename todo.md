@@ -1,5 +1,5 @@
-- Noctalia Calendar integration with icloud calendar
 - Umbriel Overview in Noctalia Bar
+- Noctalia greeter: cursor, no session selector for single session
 - Correct cursor in xwayland apps
 - Set up automated encrypted off-machine backups when a suitable destination
   is available, with retention, integrity checks, failure notifications, and

@@ -158,7 +158,12 @@ in
   # the Umbriel session.
   systemd.user.services.systembus-notify = {
     wantedBy = lib.mkForce [ "umbriel-session.target" ];
-    after = [ "noctalia.service" ];
+    # Explicit ordering after the target prevents its default dependencies
+    # from ordering it after this bridge and creating a cycle with Noctalia.
+    after = [
+      "umbriel-session.target"
+      "noctalia.service"
+    ];
     partOf = [ "umbriel-session.target" ];
   };
 

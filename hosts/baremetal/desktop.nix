@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   pkgs-unstable,
   ...
@@ -19,6 +20,64 @@ in
   };
 
   programs.umbriel.enable = true;
+
+  # NixOS 26.05 predates services.oo7 and its PAM option. Use the unstable
+  # packages with the same daemon, D-Bus and capability-wrapper integration.
+  services.dbus.packages = [
+    pkgs-unstable.oo7-server
+    # oo7 delegates graphical password dialogs to GCR's SystemPrompter.
+    pkgs.gcr
+  ];
+  systemd.packages = [ pkgs-unstable.oo7-server ];
+  systemd.user.services.oo7-daemon = {
+    wantedBy = [ "default.target" ];
+    aliases = [ "dbus-org.freedesktop.secrets.service" ];
+  };
+  security.wrappers.oo7-daemon = {
+    owner = "root";
+    group = "root";
+    capabilities = "cap_ipc_lock=ep";
+    source = "${pkgs-unstable.oo7-server}/libexec/oo7-daemon";
+  };
+
+  # Capture the login password before PAM's sufficient authentication rules
+  # can return, then unlock the keyring when the user session opens.
+  security.pam.services = lib.genAttrs [ "greetd" "login" "passwd" ] (name: {
+    rules = {
+      auth.oo7-unix = {
+        order = config.security.pam.services.${name}.rules.auth.unix.order - 20;
+        control = "optional";
+        modulePath = "${pkgs.pam}/lib/security/pam_unix.so";
+        settings = {
+          try_first_pass = true;
+          likeauth = true;
+        };
+      };
+      auth.oo7 = {
+        order = config.security.pam.services.${name}.rules.auth.unix.order - 10;
+        control = "optional";
+        modulePath = "${pkgs-unstable.oo7-pam}/lib/security/pam_oo7.so";
+      };
+      session.oo7 = {
+        order = config.security.pam.services.${name}.rules.session.gnome_keyring.order + 1;
+        control = "optional";
+        modulePath = "${pkgs-unstable.oo7-pam}/lib/security/pam_oo7.so";
+        settings.auto_start = true;
+      };
+      password.oo7 = {
+        order = config.security.pam.services.${name}.rules.password.gnome_keyring.order + 1;
+        control = "optional";
+        modulePath = "${pkgs-unstable.oo7-pam}/lib/security/pam_oo7.so";
+      };
+      # Let oo7 see password changes after pam_unix has updated the account.
+      password.unix.control = lib.mkForce "required";
+    };
+  });
+
+  xdg.portal = {
+    extraPortals = [ pkgs-unstable.oo7-portal ];
+    config.umbriel."org.freedesktop.impl.portal.Secret" = [ "oo7-portal" ];
+  };
 
   # Match the keyboard's macOS legends before XKB sees the keys: the physical
   # Option/Super keys become left Alt (and therefore Level3 via
@@ -84,6 +143,7 @@ in
   programs.steam.enable = true;
 
   environment.systemPackages = [
+    pkgs-unstable.oo7
     pkgs.bubblewrap
     pkgs.xwayland-satellite
   ];
