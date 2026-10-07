@@ -40,12 +40,15 @@ in
     umbriel.homeModules.default
   ];
 
+  # Umbriel activates this target after publishing its Wayland environment.
+  # Graphical user services must follow the compositor session's lifetime.
+  wayland.systemd.target = "umbriel-session.target";
+
   programs.umbriel = {
     enable = true;
     settings = {
       general = {
         autostart = [
-          "noctalia"
           # Keep the app and SSH agent available without opening the locked
           # main window immediately after login.
           "1password --silent"

@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   pkgs-unstable,
   ...
@@ -30,7 +31,7 @@ in
 
     clean = {
       enable = true;
-      extraArgs = "--keep-since 7d --keep 3";
+      extraArgs = "--keep-since 30d --keep 10";
     };
   };
 
@@ -68,11 +69,10 @@ in
   # Boot
   # ---------------------------------------------------------------------------
 
-  # Boot the current generation immediately during normal startup. Holding
-  # Space while the firmware hands off to systemd-boot still reveals the menu
-  # for selecting an older generation.
+  # Keep recovery generations accessible through a brief, minimal menu at
+  # the firmware's highest supported console resolution.
   boot.loader = {
-    timeout = 0;
+    timeout = 2;
 
     systemd-boot = {
       enable = true;
@@ -119,8 +119,18 @@ in
   boot.initrd.luks.devices."cryptroot".crypttabExtraOpts = [
     "tpm2-device=auto"
   ];
+  # Let the periodic TRIM service reach the SSD through the encrypted volume.
+  boot.initrd.luks.devices."cryptroot".allowDiscards = true;
 
+  # Supported upstream stable series; keep current with 7.2 point releases.
   boot.kernelPackages = pkgs-unstable.linuxPackages_7_2;
+
+  # Compressed swap provides breathing room for builds and desktop workloads.
+  # This is a capacity limit, not a reservation of half the physical RAM.
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+  };
 
   # ---------------------------------------------------------------------------
   # Networking
@@ -128,6 +138,37 @@ in
 
   networking.hostName = "baremetal";
   networking.networkmanager.enable = true;
+
+  # ---------------------------------------------------------------------------
+  # Hardware maintenance and desktop integration
+  # ---------------------------------------------------------------------------
+
+  services.smartd = {
+    enable = true;
+    autodetect = true;
+    notifications = {
+      # Forward disk warnings from the system bus into the graphical session.
+      systembus-notify.enable = true;
+      wall.enable = true;
+      x11.enable = false;
+    };
+  };
+
+  # Start the notification bridge after Noctalia starts, and stop it alongside
+  # the Umbriel session.
+  systemd.user.services.systembus-notify = {
+    wantedBy = lib.mkForce [ "umbriel-session.target" ];
+    after = [ "noctalia.service" ];
+    partOf = [ "umbriel-session.target" ];
+  };
+
+  services.fwupd.enable = true;
+  services.gvfs.enable = true;
+
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
 
   # ---------------------------------------------------------------------------
   # Locale / keyboard
@@ -183,9 +224,8 @@ in
     description = "Joel";
     shell = pkgs.fish;
     extraGroups = [
-      "input"
+      "logitech"
       "networkmanager"
-      "uinput"
       "wheel"
     ];
   };

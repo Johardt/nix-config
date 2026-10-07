@@ -3,8 +3,15 @@
 {
   imports = [ noctalia.homeModules.default ];
 
+  systemd.user.services.noctalia = {
+    # Stop immediately if the compositor exits, including an unexpected crash.
+    Unit.BindsTo = [ "umbriel.service" ];
+    Service.RestartSec = 3;
+  };
+
   programs.noctalia = {
     enable = true;
+    systemd.enable = true;
     # Noctalia v5 from nixpkgs-unstable. This is intentionally `noctalia`,
     # not the legacy Quickshell-based `noctalia-shell` package.
     package = pkgs-unstable.noctalia;
@@ -13,6 +20,27 @@
     # rather than runtime overrides.
     settings = {
       config_version = 14;
+
+      lockscreen = {
+        enabled = true;
+        lock_before_suspend = true;
+      };
+
+      idle = {
+        pre_action_fade_seconds = 0;
+        behavior = {
+          lock = {
+            enabled = true;
+            timeout = 600;
+            action = "lock";
+          };
+          suspend = {
+            enabled = true;
+            timeout = 1800;
+            action = "lock_and_suspend";
+          };
+        };
+      };
 
       bar.default = {
         background_opacity = 0.0;
@@ -244,7 +272,7 @@
           type = "noctalia/umbriel-companion:bar";
         };
         battery.enabled = false;
-        bluetooth.enabled = false;
+        bluetooth.enabled = true;
         brightness.enabled = false;
         caffeine.enabled = false;
         date.format = "{:%a %d %b %H:%M}";

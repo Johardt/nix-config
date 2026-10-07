@@ -51,11 +51,15 @@ in
   # hardware.uinput's udev rule when tmpfiles recreates the node.
   systemd.tmpfiles.rules = [ "z /dev/uinput 0660 root uinput -" ];
 
-  # Steam's per-session uaccess ACL masks the owning group's permissions.
-  # Restore them after uaccess so Kanata's dynamic user retains group access.
+  # OpenLogi needs HID access to the installed Unifying and Bolt receivers.
+  # Keep this separate from Kanata's raw-input and event-injection groups.
+  users.groups.logitech = { };
+
+  # Restore the uinput group permissions after Steam's per-session uaccess
+  # rule so Kanata's dynamic user retains access.
   services.udev.extraRules = ''
     SUBSYSTEM=="misc", KERNEL=="uinput", RUN+="${pkgs.acl}/bin/setfacl -m g::rw /dev/uinput"
-    SUBSYSTEM=="hidraw", KERNEL=="hidraw*", GROUP="input", MODE="0660"
+    SUBSYSTEM=="hidraw", KERNEL=="hidraw*", ATTRS{idVendor}=="046d", ATTRS{idProduct}=="c52b|c548", GROUP="logitech", MODE="0660"
   '';
 
   # Use the proprietary user-space driver with
