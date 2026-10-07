@@ -120,8 +120,6 @@ in
     "tpm2-device=auto"
   ];
 
-  # nixos-26.05 currently pairs Linux 7.2 with NVIDIA 595.71.05, which does not
-  # compile against that kernel. Unstable provides the newer compatible driver.
   boot.kernelPackages = pkgs-unstable.linuxPackages_7_2;
 
   # ---------------------------------------------------------------------------

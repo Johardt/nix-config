@@ -8,7 +8,6 @@
 
   home.packages = with pkgs; [
     btop
-    codex
     curl
     fd
     gawk
@@ -26,7 +25,6 @@
     fastfetch
     biome
     bun
-    mise
     zip
     unzip
     _7zip-zstd

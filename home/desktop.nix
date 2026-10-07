@@ -3,7 +3,6 @@
 {
   imports = [
     ./apps
-    ./gnome.nix
     ./noctalia.nix
     ./umbriel.nix
   ];
@@ -15,6 +14,7 @@
       chromium
       geist-font
       inter
+      nautilus
       nerd-fonts.adwaita-mono
       nerd-fonts.geist-mono
       nerd-fonts.jetbrains-mono
@@ -49,6 +49,7 @@
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
+      "inode/directory" = [ "org.gnome.Nautilus.desktop" ];
       "text/html" = [ "firefox.desktop" ];
       "application/xhtml+xml" = [ "firefox.desktop" ];
       "x-scheme-handler/http" = [ "firefox.desktop" ];

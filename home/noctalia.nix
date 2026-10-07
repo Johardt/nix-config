@@ -259,7 +259,6 @@
         tray = {
           detached_panel = true;
           drawer = true;
-          hidden = [ "/org/ayatana/NotificationItem/ibus_ui_gtk3" ];
         };
         volume.show_label = false;
         wallhaven.type = "noctalia/wallhaven:wallhaven";

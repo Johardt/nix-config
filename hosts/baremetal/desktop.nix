@@ -9,20 +9,7 @@ let
   desktop = import ../../shared/desktop.nix;
 in
 {
-  # Keep the GNOME session available alongside Umbriel.
-  services.xserver.enable = true;
-  services.xserver.excludePackages = with pkgs; [
-    xterm
-  ];
-  services.desktopManager.gnome.enable = true;
-  environment.gnome.excludePackages = with pkgs; [
-    gnome-music
-    gnome-console
-    gnome-system-monitor
-    epiphany
-  ];
-
-  programs.noctalia-greeter = {
+  services.displayManager.noctalia-greeter = {
     enable = true;
     # Use the nixpkgs-unstable package, alongside Noctalia v5. The Git input
     # remains responsible for the NixOS module and its configuration options.
@@ -32,10 +19,6 @@ in
   };
 
   programs.umbriel.enable = true;
-
-  # GTK and Qt use Wayland's text-input protocol instead of legacy IM module
-  # environment variables. XMODIFIERS remains available to Xwayland clients.
-  i18n.inputMethod.ibus.waylandFrontend = true;
 
   # Match the keyboard's macOS legends before XKB sees the keys: the physical
   # Option/Super keys become left Alt (and therefore Level3 via
@@ -89,7 +72,7 @@ in
   };
 
   # Preserve NVIDIA video memory across suspend outside a potentially
-  # size-constrained tmpfs to avoid incomplete GNOME/Wayland resumes.
+  # size-constrained tmpfs to avoid incomplete Wayland resumes.
   boot.kernelParams = [ "nvidia.NVreg_TemporaryFilePath=/var/tmp" ];
 
   # Steam needs system-level integration for its runtime and 32-bit graphics
@@ -97,6 +80,7 @@ in
   programs.steam.enable = true;
 
   environment.systemPackages = [
+    pkgs.bubblewrap
     pkgs.xwayland-satellite
   ];
 }

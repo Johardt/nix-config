@@ -36,21 +36,9 @@ in
 {
   home.packages = [ launchOrFocus ];
 
-  # Umbriel and its shell are intentionally isolated from shared desktop and
-  # GNOME configuration.
   imports = [
     umbriel.homeModules.default
   ];
-
-  # GNOME starts IBus through its session target. In Umbriel, replace the
-  # generic XIM autostart entry with IBus's Wayland UI, which owns the daemon.
-  xdg.configFile."autostart/ibus-daemon.desktop".text = ''
-    [Desktop Entry]
-    Type=Application
-    Name=IBus
-    Exec=${pkgs.ibus}/libexec/ibus-ui-gtk3 --enable-wayland-im --exec-daemon --daemon-args "--xim --panel disable"
-    OnlyShowIn=umbriel;
-  '';
 
   programs.umbriel = {
     enable = true;
@@ -97,8 +85,8 @@ in
         mode = "scrolling";
         gap = 12;
         scrolling = {
+          default_extent_fraction = 0.5;
           center_underfull_strip = true;
-          default_width_fraction = 0.5;
         };
       };
 
@@ -150,8 +138,8 @@ in
         # Keep Super+F available for application-level Find, as on macOS.
         # Column / Window altering commands (Shift+Super)
         "Shift+Super+F" = "window-toggle-fullscreen";
-        "Shift+Super+Up" = "window-set-width:1";
-        "Shift+Super+Down" = "window-set-width:0.5";
+        "Shift+Super+Up" = "window-set-primary-extent:1";
+        "Shift+Super+Down" = "window-set-primary-extent:0.5";
         "Shift+Super+Left" = "column-move-left";
         "Shift+Super+Right" = "column-move-right";
 
@@ -211,14 +199,18 @@ in
         {
           match.app_id = "^dev.noctalia.Noctalia$";
           default_floating = true;
-          default_width = 0.5;
-          default_height = 0.625;
+          default_floating_size = {
+            width = 0.5;
+            height = 0.625;
+          };
         }
         {
           match.app_id = "^dev.noctalia.UmbrielSharePicker$";
           default_floating = true;
-          default_width = 0.4;
-          default_height = 0.42;
+          default_floating_size = {
+            width = 0.4;
+            height = 0.42;
+          };
           default_position = {
             x = 32;
             y = 32;
@@ -231,6 +223,7 @@ in
         }
         {
           match.app_id = "^com[.]mitchellh[.]ghostty$";
+          default_scrolling_extent = 0.5;
           default_workspace = 2;
         }
         {

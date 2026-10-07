@@ -2,7 +2,7 @@
 
 This repository defines my very personalized and opinionated nixos configuration, focused around feeling native for a macOS user.  
 This means keybinds and keyboard input assume a macOS user on a macOS keyboard.  
-It also uses the new and experimental Umbriel WM, but keeps a nicely configured GNOME session installed as backup.
+It uses the new and experimental Umbriel WM with Noctalia as its desktop shell and greeter.
 
 ### Installation
 
