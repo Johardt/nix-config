@@ -1,4 +1,9 @@
-{ pkgs, pkgs-unstable, ... }:
+{
+  pkgs,
+  pkgs-unstable,
+  apple-fonts,
+  ...
+}:
 
 {
   imports = [
@@ -32,7 +37,10 @@
     ])
     ++ (with pkgs-unstable; [
       openlogi
-    ]);
+    ])
+    ++ [ apple-fonts.packages.${pkgs.stdenv.hostPlatform.system}.sf-pro ];
+
+  fonts.fontconfig.enable = true;
 
   home.sessionVariables.TERMINAL = "ghostty";
 

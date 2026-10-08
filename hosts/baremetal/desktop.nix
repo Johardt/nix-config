@@ -21,7 +21,7 @@ in
       cursor = {
         theme = desktop.cursor.theme;
         size = desktop.cursor.size;
-        path = pkgs.bibata-cursors;
+        path = "${pkgs.bibata-cursors}/share/icons";
       };
       session.default = "Umbriel";
     };
@@ -93,7 +93,8 @@ in
   # Normalizing both Option keys to left Alt avoids right Alt being treated as
   # AltGr before its Level3 state reaches clients. The MX Keys reports its
   # physical right Option key as Right Ctrl, so normalize that key as well.
-  # Caps remains a dedicated Ctrl+Shift+Super chord.
+  # Caps is the desktop navigation modifier (Ctrl+Super). Leave Shift free
+  # so Caps+Shift carries windows to the same navigation destinations.
   services.kanata = {
     enable = true;
     keyboards.default = {
@@ -104,11 +105,11 @@ in
         )
 
         (defalias
-          hyper (multi lsft lctl lmet)
+          desktop-nav (multi lctl lmet)
         )
 
         (deflayer base
-          @hyper lmet lalt rmet lalt lalt
+          @desktop-nav lmet lalt rmet lalt lalt
         )
       '';
     };

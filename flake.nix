@@ -5,6 +5,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    apple-fonts = {
+      url = "github:Lyndeno/apple-fonts.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     noctalia = {
       url = "github:noctalia-dev/noctalia";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,6 +43,7 @@
     {
       nixpkgs,
       nixpkgs-unstable,
+      apple-fonts,
       home-manager,
       disko,
       noctalia,
@@ -79,7 +85,12 @@
               useGlobalPkgs = true;
               useUserPackages = true;
               extraSpecialArgs = {
-                inherit noctalia umbriel pkgs-unstable;
+                inherit
+                  noctalia
+                  umbriel
+                  pkgs-unstable
+                  apple-fonts
+                  ;
               };
 
               users.joel = import ./home/joel.nix;

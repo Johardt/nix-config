@@ -60,8 +60,14 @@ in
       };
 
       appearance = {
-        border_width = 4;
+        border_width = 2;
         corner_radius = 12;
+        shadow = {
+          enabled = true;
+          softness = 12;
+          offset_x = 0;
+          offset_y = 3;
+        };
         blur = {
           enabled = true;
           optimized = true;
@@ -78,6 +84,7 @@ in
       # its wallpaper layer. Use a dark color for that brief handoff instead
       # of the light palette's near-white default.
       colors.background = "#18252CFF";
+      colors.shadow = "#00000060";
 
       # Noctalia regenerates this file whenever the palette changes. It is
       # included before the main config, so explicitly configured values below
@@ -87,15 +94,21 @@ in
       layout = {
         mode = "scrolling";
         gap = 12;
+        # Bring tiled windows 8px closer to the bar while retaining the
+        # existing spacing between windows and at the other output edges.
+        struts.top = -8;
         scrolling = {
           default_extent_fraction = 0.5;
           center_underfull_strip = true;
         };
       };
 
-      # Keep the numbered workspaces available so window rules can target
-      # workspace 2 even when it is otherwise empty.
-      output."DP-1".min_workspaces = 3;
+      # Stable activity spaces; numeric bindings and rules select their positions.
+      output."DP-1".workspaces = [
+        "1 Browse"
+        "2 Build"
+        "3 Connect"
+      ];
 
       animation.scratchpad = {
         enabled = true;
@@ -115,77 +128,88 @@ in
         middle_click_paste = false;
       };
 
+      # Command/navigation philosophy:
+      # Command (Super) acts inside apps; Command+Space is the app launcher.
+      # Caps navigates the desktop (Kanata emits Ctrl+Super, without Shift).
+      # Left/right traverse windows; up/down traverse workspaces. Add Shift
+      # to carry the focused column/window with you to the same destination.
+      # Numbers select workspaces; Shift+numbers send the focused window there.
+      # Caps+letters reach apps and desktop tools. Sizing uses separate keys.
       keybinds = {
         "Super+Space" = "spawn:noctalia msg panel-toggle launcher";
-        "Super+Shift+V" = {
+        "Super+Q" = "window-close";
+        
+        "Ctrl+Super+V" = {
           action = "spawn:noctalia msg panel-toggle clipboard";
           repeat = false;
         };
-        "Super+Shift+O" = "cheatsheet-toggle";
-        "Super+O" = "overview-toggle";
-        "Super+Q" = "window-close";
+        "Ctrl+Super+F1" = "cheatsheet-toggle";
+        "Ctrl+Super+Space" = "overview-toggle";
 
-        # Keep frequently used windows nearby without dedicating a workspace.
-        "Super+Grave" = "scratchpad-toggle";
-        "Super+Shift+Grave" = "window-toggle-scratchpad";
-        "Super+Tab" = "scratchpad-focus-next";
+        # Scratchpad controls share the desktop modifier.
+        "Ctrl+Super+Grave" = "scratchpad-toggle";
+        "Ctrl+Shift+Super+Grave" = "window-toggle-scratchpad";
+        "Ctrl+Super+Tab" = "scratchpad-focus-next";
 
-        "Super+Left" = "window-focus-left";
-        "Super+Down" = "window-focus-down";
-        "Super+Up" = "window-focus-up";
-        "Super+Right" = "window-focus-right";
-        "Super+H" = "window-focus-left";
-        "Super+J" = "window-focus-down";
-        "Super+K" = "window-focus-up";
-        "Super+L" = "window-focus-right";
-        # Keep Super+F available for application-level Find, as on macOS.
-        # Column / Window altering commands (Shift+Super)
-        "Shift+Super+F" = "window-toggle-fullscreen";
-        "Shift+Super+Up" = "window-set-primary-extent:1";
-        "Shift+Super+Down" = "window-set-primary-extent:0.5";
-        "Shift+Super+Left" = "column-move-left";
-        "Shift+Super+Right" = "column-move-right";
+        # Navigate the scrolling strip horizontally and workspaces vertically.
+        "Ctrl+Super+Left" = "window-focus-left";
+        "Ctrl+Super+Right" = "window-focus-right";
+        "Ctrl+Super+Up" = "workspace-previous";
+        "Ctrl+Super+Down" = "workspace-next";
 
-        # Workspace-control commands (Hyper)
-        "Ctrl+Shift+Super+Down" = "workspace-next";
-        "Ctrl+Shift+Super+Up" = "workspace-previous";
-        "Ctrl+Shift+Super+1" = "workspace-switch:1";
-        "Ctrl+Shift+Super+2" = "workspace-switch:2";
-        "Ctrl+Shift+Super+3" = "workspace-switch:3";
-        "Ctrl+Shift+Super+4" = "workspace-switch:4";
-        "Ctrl+Shift+Super+5" = "workspace-switch:5";
-        "Ctrl+Shift+Super+6" = "workspace-switch:6";
-        "Ctrl+Shift+Super+7" = "workspace-switch:7";
-        "Ctrl+Shift+Super+8" = "workspace-switch:8";
-        "Ctrl+Shift+Super+9" = "workspace-switch:9";
-        # Hyper already contains Shift, so F1-F9 provide a distinct set for
-        # moving the focused window while the number row switches workspaces.
-        "Ctrl+Shift+Super+F1" = "window-move-to-workspace:1";
-        "Ctrl+Shift+Super+F2" = "window-move-to-workspace:2";
-        "Ctrl+Shift+Super+F3" = "window-move-to-workspace:3";
-        "Ctrl+Shift+Super+F4" = "window-move-to-workspace:4";
-        "Ctrl+Shift+Super+F5" = "window-move-to-workspace:5";
-        "Ctrl+Shift+Super+F6" = "window-move-to-workspace:6";
-        "Ctrl+Shift+Super+F7" = "window-move-to-workspace:7";
-        "Ctrl+Shift+Super+F8" = "window-move-to-workspace:8";
-        "Ctrl+Shift+Super+F9" = "window-move-to-workspace:9";
-        "Ctrl+Shift+Super+P" = {
+        # Shift carries the column horizontally or the window between workspaces.
+        "Ctrl+Shift+Super+Left" = "column-move-left";
+        "Ctrl+Shift+Super+Right" = "column-move-right";
+        "Ctrl+Shift+Super+Up" = "window-move-to-workspace-previous";
+        "Ctrl+Shift+Super+Down" = "window-move-to-workspace-next";
+        "Ctrl+Shift+Super+H" = "column-move-left";
+        "Ctrl+Shift+Super+L" = "column-move-right";
+        "Ctrl+Shift+Super+K" = "window-move-to-workspace-previous";
+        "Ctrl+Shift+Super+J" = "window-move-to-workspace-next";
+
+        # Presentation and width presets stay separate from directional movement.
+        "Ctrl+Super+F" = "window-toggle-fullscreen";
+        "Ctrl+Super+F10" = "window-set-primary-extent:0.5";
+        "Ctrl+Super+F11" = "window-set-primary-extent:1";
+
+        # Select a destination; add Shift to send the focused window there.
+        "Ctrl+Super+1" = "workspace-switch:1";
+        "Ctrl+Super+2" = "workspace-switch:2";
+        "Ctrl+Super+3" = "workspace-switch:3";
+        "Ctrl+Super+4" = "workspace-switch:4";
+        "Ctrl+Super+5" = "workspace-switch:5";
+        "Ctrl+Super+6" = "workspace-switch:6";
+        "Ctrl+Super+7" = "workspace-switch:7";
+        "Ctrl+Super+8" = "workspace-switch:8";
+        "Ctrl+Super+9" = "workspace-switch:9";
+        "Ctrl+Shift+Super+1" = "window-move-to-workspace:1";
+        "Ctrl+Shift+Super+2" = "window-move-to-workspace:2";
+        "Ctrl+Shift+Super+3" = "window-move-to-workspace:3";
+        "Ctrl+Shift+Super+4" = "window-move-to-workspace:4";
+        "Ctrl+Shift+Super+5" = "window-move-to-workspace:5";
+        "Ctrl+Shift+Super+6" = "window-move-to-workspace:6";
+        "Ctrl+Shift+Super+7" = "window-move-to-workspace:7";
+        "Ctrl+Shift+Super+8" = "window-move-to-workspace:8";
+        "Ctrl+Shift+Super+9" = "window-move-to-workspace:9";
+
+        # Reach the existing app window, or launch it when absent.
+        "Ctrl+Super+P" = {
           action = "spawn:umbriel-launch-or-focus '^(1password|1Password|com[.]1password[.]1Password)$' 1password";
           repeat = false;
         };
-        "Ctrl+Shift+Super+Return" = {
+        "Ctrl+Super+Return" = {
           action = "spawn:umbriel-launch-or-focus '^com[.]mitchellh[.]ghostty$' ghostty";
           repeat = false;
         };
-        "Ctrl+Shift+Super+B" = {
+        "Ctrl+Super+B" = {
           action = "spawn:umbriel-launch-or-focus '^firefox$' firefox";
           repeat = false;
         };
-        "Ctrl+Shift+Super+Z" = {
+        "Ctrl+Super+Z" = {
           action = "spawn:umbriel-launch-or-focus '^dev[.]zed[.]Zed$' zeditor";
           repeat = false;
         };
-        "Ctrl+Shift+Super+E" = {
+        "Ctrl+Super+E" = {
           action = "spawn:umbriel-launch-or-focus '^org[.]gnome[.]Nautilus$' nautilus";
           repeat = false;
         };
@@ -221,8 +245,13 @@ in
           };
         }
         {
-          match.app_id = "^firefox$";
+          match.app_id = "^(firefox|[Cc]ider|org[.]gnome[.]Nautilus)$";
           default_workspace = 1;
+        }
+        {
+          # Connect: communication apps, including Chromium PWA IDs.
+          match.app_id = "^(discord|chrome-mail[.]proton[.]me__u1_inbox-Default|chrome-web[.]whatsapp[.]com__-Default)$";
+          default_workspace = 3;
         }
         {
           match.app_id = "^com[.]mitchellh[.]ghostty$";
