@@ -16,7 +16,15 @@ in
     # remains responsible for the NixOS module and its configuration options.
     package = pkgs-unstable.noctalia-greeter;
     # Caps is remapped by Kanata below, before the XKB keymap is applied.
-    settings.keyboard = desktop.keyboard;
+    settings = {
+      keyboard = desktop.keyboard;
+      cursor = {
+        theme = desktop.cursor.theme;
+        size = desktop.cursor.size;
+        path = pkgs.bibata-cursors;
+      };
+      session.default = "Umbriel";
+    };
   };
 
   programs.umbriel.enable = true;
