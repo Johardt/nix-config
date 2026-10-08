@@ -29,20 +29,6 @@ in
   # Chromium uses these URL/profile-derived IDs for native Wayland app windows.
   # Matching the desktop file names lets the compositor associate the windows
   # with these friendly names and icons.
-  xdg.desktopEntries."chrome-mail.proton.me__u1_inbox-Default" = {
-    name = "Proton Mail";
-    genericName = "Email Client";
-    comment = "Open Proton Mail";
-    exec = "${pkgs.chromium}/bin/chromium --ozone-platform=wayland --app=https://mail.proton.me/u/1/inbox --user-data-dir=${config.xdg.dataHome}/proton-mail-pwa";
-    icon = "proton-mail";
-    terminal = false;
-    categories = [
-      "Network"
-      "Email"
-    ];
-    settings.StartupNotify = "true";
-  };
-
   xdg.desktopEntries."chrome-chatgpt.com__-Default" = {
     name = "ChatGPT";
     genericName = "AI Assistant";

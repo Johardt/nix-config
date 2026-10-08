@@ -451,7 +451,7 @@
           custom_image_colorize = true;
         };
         active_window = {
-          display = "text_only";
+          display = "icon_and_text";
           font_weight = 600;
         };
         bar = {

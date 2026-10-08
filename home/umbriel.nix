@@ -94,6 +94,7 @@ in
       layout = {
         mode = "scrolling";
         gap = 12;
+        extent_presets = [ 0.5 1.0 ];
         # Bring tiled windows 8px closer to the bar while retaining the
         # existing spacing between windows and at the other output edges.
         struts.top = -8;
@@ -121,10 +122,8 @@ in
         keyboard = desktop.keyboard;
         touchpad.natural_scroll = true;
         cursor = desktop.cursor;
-        focus = {
-          follows_mouse = true;
-          follows_mouse_max_scroll = 0.33;
-        };
+        # Focus changes deliberately through keyboard navigation or clicks.
+        focus.follows_mouse = false;
         middle_click_paste = false;
       };
 
@@ -134,7 +133,7 @@ in
       # Left/right traverse windows; up/down traverse workspaces. Add Shift
       # to carry the focused column/window with you to the same destination.
       # Numbers select workspaces; Shift+numbers send the focused window there.
-      # Caps+letters reach apps and desktop tools. Sizing uses separate keys.
+      # Caps+letters reach apps and desktop tools, including the width toggle.
       keybinds = {
         "Super+Space" = "spawn:noctalia msg panel-toggle launcher";
         "Super+Q" = "window-close";
@@ -157,6 +156,16 @@ in
         "Ctrl+Super+Up" = "workspace-previous";
         "Ctrl+Super+Down" = "workspace-next";
 
+        # Caps+wheel follows the workspace axis; throttle fast wheel events.
+        "Ctrl+Super+WheelUp" = {
+          action = "workspace-previous";
+          cooldown_ms = 150;
+        };
+        "Ctrl+Super+WheelDown" = {
+          action = "workspace-next";
+          cooldown_ms = 150;
+        };
+
         # Shift carries the column horizontally or the window between workspaces.
         "Ctrl+Shift+Super+Left" = "column-move-left";
         "Ctrl+Shift+Super+Right" = "column-move-right";
@@ -167,8 +176,9 @@ in
         "Ctrl+Shift+Super+K" = "window-move-to-workspace-previous";
         "Ctrl+Shift+Super+J" = "window-move-to-workspace-next";
 
-        # Presentation and width presets stay separate from directional movement.
-        "Ctrl+Super+F" = "window-toggle-fullscreen";
+        # Cycle framed half/full width; add Shift for true fullscreen.
+        "Ctrl+Super+F" = "window-cycle-primary-extent";
+        "Ctrl+Shift+Super+F" = "window-toggle-fullscreen";
         "Ctrl+Super+F10" = "window-set-primary-extent:0.5";
         "Ctrl+Super+F11" = "window-set-primary-extent:1";
 
@@ -197,7 +207,7 @@ in
           action = "spawn:umbriel-launch-or-focus '^(1password|1Password|com[.]1password[.]1Password)$' 1password";
           repeat = false;
         };
-        "Ctrl+Super+Return" = {
+        "Ctrl+Super+T" = {
           action = "spawn:umbriel-launch-or-focus '^com[.]mitchellh[.]ghostty$' ghostty";
           repeat = false;
         };
@@ -245,12 +255,13 @@ in
           };
         }
         {
+          # Browse: internet, music, files
           match.app_id = "^(firefox|[Cc]ider|org[.]gnome[.]Nautilus)$";
           default_workspace = 1;
         }
         {
-          # Connect: communication apps, including Chromium PWA IDs.
-          match.app_id = "^(discord|chrome-mail[.]proton[.]me__u1_inbox-Default|chrome-web[.]whatsapp[.]com__-Default)$";
+          # Connect: mail and chat, including Chromium PWA IDs.
+          match.app_id = "^(net[.]donnybeelo[.]Convey|discord|chrome-web[.]whatsapp[.]com__-Default)$";
           default_workspace = 3;
         }
         {

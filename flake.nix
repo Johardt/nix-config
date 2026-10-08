@@ -5,6 +5,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    hatter = {
+      url = "github:Mibea/Hatter";
+      flake = false;
+    };
+
     apple-fonts = {
       url = "github:Lyndeno/apple-fonts.nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -44,6 +49,7 @@
       nixpkgs,
       nixpkgs-unstable,
       apple-fonts,
+      hatter,
       home-manager,
       disko,
       noctalia,
@@ -90,6 +96,7 @@
                   umbriel
                   pkgs-unstable
                   apple-fonts
+                  hatter
                   ;
               };
 

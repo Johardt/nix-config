@@ -1,5 +1,7 @@
 - Umbriel Overview in Noctalia Bar
-- Noctalia greeter: cursor, no session selector for single session
+- Zed and co: Finish cmd-ifying keybinds
+- Calendar app?
+- strategy for not-nix managed stuff (skills, mise installed shims, codex, ...)
 - Correct cursor in xwayland apps
 - Set up automated encrypted off-machine backups when a suitable destination
   is available, with retention, integrity checks, failure notifications, and
@@ -7,8 +9,6 @@
   accessible without this computer.
 - Add automatic Btrfs snapshots for /home with bounded retention and disk
   usage. Decide whether root snapshots are useful alongside Nix generations.
-- Check firmware-update support after activating fwupd: run
-  `fwupdmgr get-devices` and `fwupdmgr refresh`, then `fwupdmgr get-updates`.
 - Document an update workflow that builds the full system before activation
   and tests login, suspend/resume, gaming, and screen sharing after desktop
   stack updates. Preserve a proven working generation through cleanup.

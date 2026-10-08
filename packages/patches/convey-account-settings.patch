@@ -1,0 +1,23 @@
+--- a/src/client/accounts/accounts-editor-add-pane.vala
++++ b/src/client/accounts/accounts-editor-add-pane.vala
+@@ -311,4 +311,3 @@
+-        // Autoconfig found the servers, so there's nothing useful for
+-        // the user to change here.
+-        this.receiving_service_widget.set_server_details_visible(false);
+-        this.sending_service_widget.set_server_details_visible(false);
++        // Keep overrides accessible for local services such as Proton Bridge.
++        this.receiving_service_widget.set_server_details_visible(true);
++        this.sending_service_widget.set_server_details_visible(true);
+--- a/src/client/accounts/accounts-service-information-widget.vala
++++ b/src/client/accounts/accounts-service-information-widget.vala
+@@ -25,0 +26,10 @@
++    construct {
++        this.credentials_requirement_row.notify["selected"].connect(() => {
++            bool needs_login =
++                (this.credentials_requirement_row.selected ==
++                 Convey.Credentials.Requirement.CUSTOM);
++            this.login_name_row.visible = needs_login;
++            this.password_row.visible = needs_login;
++        });
++    }
++
