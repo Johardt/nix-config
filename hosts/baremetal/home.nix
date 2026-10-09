@@ -26,8 +26,6 @@ in
 
   _module.args.mainMonitor = {
     name = "DP-1";
-    width = 2560;
-    height = 1440;
   };
 
   programs.noctalia.settings = {
