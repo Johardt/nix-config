@@ -6,6 +6,13 @@ let
   gitStatus = if isDarwin then "git\\ status" else "git\\x20status";
 in
 {
+  home.sessionVariables = lib.mkIf (!isDarwin) { TERMINAL = "ghostty"; };
+
+  xdg.terminal-exec = lib.mkIf (!isDarwin) {
+    enable = true;
+    settings.default = [ "com.mitchellh.ghostty.desktop" ];
+  };
+
   programs.ghostty = {
     enable = true;
     # On macOS, nix-darwin's Homebrew cask owns the application.

@@ -1,4 +1,9 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  pkgs-unstable,
+  ...
+}:
 
 let
   ciderLauncher = pkgs.writeShellApplication {
@@ -24,7 +29,25 @@ let
   };
 in
 {
-  home.packages = [ ciderLauncher ];
+  home.packages =
+    (with pkgs; [
+      atuin-desktop
+      chromium
+      nautilus
+      podman-desktop
+      appimage-run
+      gimp
+      loupe
+    ])
+    ++ [
+      pkgs-unstable.openlogi
+      ciderLauncher
+    ];
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications."inode/directory" = [ "org.gnome.Nautilus.desktop" ];
+  };
 
   # Chromium uses these URL/profile-derived IDs for native Wayland app windows.
   # Matching the desktop file names lets the compositor associate the windows

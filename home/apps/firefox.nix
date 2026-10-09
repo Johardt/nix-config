@@ -1,6 +1,16 @@
-{ ... }:
+{ lib, pkgs, ... }:
 
 {
+  xdg.mimeApps = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    enable = true;
+    defaultApplications = {
+      "text/html" = [ "firefox.desktop" ];
+      "application/xhtml+xml" = [ "firefox.desktop" ];
+      "x-scheme-handler/http" = [ "firefox.desktop" ];
+      "x-scheme-handler/https" = [ "firefox.desktop" ];
+    };
+  };
+
   # Adopt the existing profile registry. The host-specific profile path is
   # declared by the NixOS host module, so replacing this metadata file does not
   # replace or migrate any profile data.
