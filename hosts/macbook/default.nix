@@ -6,7 +6,20 @@
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   nix.enable = true;
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
+
+  fonts.packages = with pkgs; [
+    adwaita-fonts
+    nerd-fonts.adwaita-mono
+    nerd-fonts.caskaydia-mono
+    nerd-fonts.geist-mono
+    nerd-fonts.jetbrains-mono
+    maple-mono.NF
+    nerd-fonts.symbols-only
+  ];
 
   system.primaryUser = "joel";
   system.stateVersion = 6;
