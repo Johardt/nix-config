@@ -15,11 +15,8 @@
   };
 
   programs.fish = {
-    # Prefer Nix tools over Brew duplicates.
+    # nix-darwin initializes Homebrew; prefer Nix tools over Brew duplicates.
     shellInit = lib.mkBefore ''
-      if test -x /opt/homebrew/bin/brew
-        /opt/homebrew/bin/brew shellenv fish | source
-      end
       fish_add_path --move --path "$HOME/.nix-profile/bin" /run/current-system/sw/bin
     '';
 

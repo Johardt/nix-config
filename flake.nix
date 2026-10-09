@@ -48,6 +48,15 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
+      inputs.brew-src.follows = "homebrew-brew";
+    };
+
+    homebrew-brew = {
+      url = "github:Homebrew/brew/7.0.9";
+      flake = false;
+    };
   };
 
   outputs =
@@ -58,6 +67,8 @@
       hatter,
       home-manager,
       nix-darwin,
+      nix-homebrew,
+      homebrew-brew,
       self,
       disko,
       noctalia,
@@ -83,7 +94,13 @@
         modules = [
           ./hosts/macbook/default.nix
           home-manager.darwinModules.home-manager
+          nix-homebrew.darwinModules.nix-homebrew
           {
+            # Retain the installed Brew version instead of nix-homebrew's older default.
+            nix-homebrew.package = homebrew-brew // {
+              name = "brew-7.0.9";
+              version = "7.0.9";
+            };
             home-manager.extraSpecialArgs.pkgs-unstable = import nixpkgs-unstable {
               system = "aarch64-darwin";
             };

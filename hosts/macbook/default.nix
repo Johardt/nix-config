@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 {
+  imports = [ ./homebrew.nix ];
+
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   nix.enable = true;
