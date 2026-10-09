@@ -244,20 +244,8 @@ in
                 "nixd" = {
                   "settings" = {
                     "nixd" = {
-                      "nixpkgs" = {
-                        "expr" = "import (builtins.getFlake \"/home/joel/nixos\").inputs.nixpkgs { }";
-                      };
                       "formatting" = {
                         "command" = [ "nixfmt" ];
-                      };
-                      "options" = {
-                        "nixos" = {
-                          "expr" = "(builtins.getFlake \"/home/joel/nixos\").nixosConfigurations.baremetal.options";
-                        };
-                        "home-manager" = {
-                          "expr" =
-                            "(builtins.getFlake \"/home/joel/nixos\").nixosConfigurations.baremetal.options.home-manager.users.type.getSubOptions []";
-                        };
                       };
                     };
                   };

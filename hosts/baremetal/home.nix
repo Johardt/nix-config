@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 let
   dotnet = pkgs.dotnetCorePackages.sdk_10_0;
@@ -23,6 +23,37 @@ in
     _7zip-zstd
     dig
   ];
+
+  _module.args.mainMonitor = {
+    name = "DP-1";
+    width = 2560;
+    height = 1440;
+  };
+
+  programs.noctalia.settings = {
+    battery.device."/org/freedesktop/UPower/devices/battery_hidpp_battery_0".warning_threshold = 20;
+  };
+
+  # Adopt the existing profile registry. The host-specific profile path is
+  # declared below, so replacing this metadata file does not
+  # replace or migrate any profile data.
+  home.file.".config/mozilla/firefox/profiles.ini".force = true;
+
+  programs.firefox.profiles.default = {
+    # Keep using the existing profile on this host.
+    path = "e3ifv08l.default";
+    # This keyboard maps its Command-style modifier to Super.
+    settings."ui.key.accelKey" = 224;
+  };
+
+  programs.zed-editor.userSettings.lsp.nixd.settings.nixd = {
+    nixpkgs.expr = "import (builtins.getFlake \"${config.home.homeDirectory}/nixos\").inputs.nixpkgs { }";
+    options = {
+      nixos.expr = "(builtins.getFlake \"${config.home.homeDirectory}/nixos\").nixosConfigurations.baremetal.options";
+      home-manager.expr =
+        "(builtins.getFlake \"${config.home.homeDirectory}/nixos\").nixosConfigurations.baremetal.options.home-manager.users.type.getSubOptions []";
+    };
+  };
 
   programs.bash.enable = true;
 

@@ -1,5 +1,6 @@
 {
   config,
+  mainMonitor,
   noctalia,
   pkgs-unstable,
   ...
@@ -288,8 +289,6 @@
         widget_spacing = 12;
       };
 
-      battery.device."/org/freedesktop/UPower/devices/battery_hidpp_battery_0".warning_threshold = 20;
-
       control_center = {
         hidden_tabs = [ "monitor" ];
         calendar.show_week_numbers = true;
@@ -339,20 +338,21 @@
       lockscreen_widgets = {
         enabled = false;
         schema_version = 2;
-        widget_order = [ "lockscreen-login-box@DP-1" ];
         grid = {
           cell_size = 16;
           major_interval = 4;
           visible = true;
         };
-        widget."lockscreen-login-box@DP-1" = {
+        widget_order = [ "lockscreen-login-box@${mainMonitor.name}" ];
+        widget."lockscreen-login-box@${mainMonitor.name}" = {
           box_height = 196.0;
           box_width = 810.0;
-          cx = 1280.0;
-          cy = 1258.0;
-          output = "DP-1";
-          placement_height = 1440.0;
-          placement_width = 2560.0;
+          # Keep the box center 182px above the bottom, centered horizontally.
+          cx = mainMonitor.width / 2.0;
+          cy = mainMonitor.height - 182.0;
+          output = mainMonitor.name;
+          placement_height = mainMonitor.height + 0.0;
+          placement_width = mainMonitor.width + 0.0;
           rotation = 0.0;
           type = "login_box";
           settings = {
@@ -379,7 +379,7 @@
       plugin_settings."noctalia/wallhaven" = {
         browser_open_near_click = true;
         browser_placement = "floating";
-        download_dir = "/home/joel/Downloads";
+        download_dir = "${config.home.homeDirectory}/Downloads";
       };
 
       plugins.enabled = [
@@ -442,7 +442,7 @@
         transition_on_startup = true;
         default.path = toString ./assets/wallpapers/rosepine/ANVTM.jpg;
         last.path = toString ./assets/wallpapers/rosepine/ANVTM.jpg;
-        monitors.DP-1.path = toString ./assets/wallpapers/rosepine/ANVTM.jpg;
+        monitors.${mainMonitor.name}.path = toString ./assets/wallpapers/rosepine/ANVTM.jpg;
       };
 
       widget = {

@@ -1,4 +1,9 @@
-{ lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   xdg.mimeApps = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
@@ -10,11 +15,6 @@
       "x-scheme-handler/https" = [ "firefox.desktop" ];
     };
   };
-
-  # Adopt the existing profile registry. The host-specific profile path is
-  # declared by the NixOS host module, so replacing this metadata file does not
-  # replace or migrate any profile data.
-  home.file.".config/mozilla/firefox/profiles.ini".force = true;
 
   # Firefox itself and its portable profile behavior are managed together.
   programs.firefox = {
@@ -32,7 +32,7 @@
 
         # Scheduled profile backups. The last filename and timestamp remain
         # runtime state in the profile.
-        "browser.backup.location" = "/home/joel/Documents/Restore Firefox";
+        "browser.backup.location" = "${config.home.homeDirectory}/Documents/Restore Firefox";
         "browser.backup.scheduled.enabled" = true;
 
         # Clear temporary and identifying site data on shutdown, but retain
