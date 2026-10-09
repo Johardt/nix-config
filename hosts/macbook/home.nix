@@ -6,6 +6,8 @@
     ../../home/apps/editors.nix
     sofka.homeManagerModules.default
     ./terminal.nix
+    ../../home/apps/ghostty.nix
+    ../../home/apps/zed.nix
     ./fish.nix
   ];
 
