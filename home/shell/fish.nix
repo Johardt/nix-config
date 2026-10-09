@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   home.sessionVariables = {
@@ -21,14 +21,21 @@
   };
 
   home.sessionPath = [
-    "$HOME/.lmstudio/bin"
-    "$HOME/.local/bin"
-    "$HOME/.bun/bin"
+    "$HOME/.lmstudio/bin" # CLI supplied by the installed LM Studio app.
+    "$HOME/.local/bin" # User executables; also exposed as XDG_BIN_HOME.
+    "$HOME/.bun/bin" # Executables from globally installed Bun packages.
   ];
 
   programs = {
     fish = {
       enable = true;
+
+      plugins = [
+        {
+          name = "autopair";
+          src = pkgs.fishPlugins.autopair.src;
+        }
+      ];
 
       shellAliases = {
         vi = "nvim";
@@ -57,6 +64,7 @@
 
       interactiveShellInit = lib.mkMerge [
         (lib.mkOrder 100 ''
+          fish_config theme choose catppuccin-macchiato
           set -g fish_greeting
           set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
           set -gx FZF_DEFAULT_OPTS '
@@ -76,6 +84,8 @@
           set -g fish_sequence_key_delay_ms 10
         '')
         (lib.mkOrder 1800 ''
+          # Optional private or machine-local overrides, kept outside this repository.
+          # Load after the managed shell integrations so overrides take precedence.
           set -l local_config "$XDG_CONFIG_HOME/fish/local.fish"
           if test -f "$local_config"
             source "$local_config"
@@ -98,6 +108,10 @@
           bind --mode insert \ef forward-word
           bind --mode insert \cl clear-screen
           bind --mode insert ctrl-space accept-autosuggestion
+          # Reapply plugin bindings after resetting vi bindings above.
+          if functions -q _autopair_fish_key_bindings
+            _autopair_fish_key_bindings
+          end
         '';
 
         cx = ''

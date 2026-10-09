@@ -57,11 +57,4 @@
       '';
     };
   };
-
-  # Replace chezmoi's old startup fragments to prevent duplicate initialization.
-  xdg.configFile."fish/conf.d/00-env.fish".text =
-    "# Environment is managed in config.fish by Home Manager.\n";
-  xdg.configFile."fish/conf.d/aliases.fish".text =
-    "# Aliases are managed in config.fish by Home Manager.\n";
-  xdg.configFile."fish/conf.d/keybinds.fish".text = "# Keybindings are managed by Home Manager.\n";
 }

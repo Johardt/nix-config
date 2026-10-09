@@ -62,7 +62,8 @@
     darwinFlake = "path:/Users/joel/nix-config#darwinConfigurations.macbook";
   };
 
-  programs.helix.settings.theme = "active";
+  # Helix 25.07.1 supports a single theme, without automatic light/dark switching.
+  programs.helix.settings.theme = "catppuccin_mocha";
   programs.sofka.enable = true;
   programs.carapace = {
     enable = true;

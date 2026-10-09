@@ -4,76 +4,19 @@ This repository manages the NixOS desktop `baremetal` and the macOS `macbook`.
 The NixOS desktop uses Umbriel with Noctalia as its desktop shell and greeter,
 with keyboard input and bindings intended to feel familiar to a macOS user.
 
-### baremetal
+## baremetal
 
-- [Fresh installation with Disko](hosts/baremetal/INSTALL.md)
-- [Disk layout](hosts/baremetal/disko.nix)
+For a fresh install, follow the [Disko installation guide](hosts/baremetal/INSTALL.md)
+to partition, encrypt, and install the system. Keep the configuration in
+`/home/joel/nixos` on the installed machine, then rebuild with:
 
-Rebuild the installed system with:
-
-```bash
+```sh
 nh os switch
 ```
 
-Evaluate the flake without building or switching:
+## macOS bootstrap
 
-```bash
-nix flake check --no-build
-```
-
-### macbook
-
-The macbook uses nix-darwin with integrated Home Manager. Git, Starship, bat,
-Atuin, tmux, Fish, Carapace, Helix, Neovim, and CLI packages are managed here.
-Helix shares editor settings with baremetal and retains its active macOS theme.
-Neovim retains its existing local LazyVim configuration. Zed and Ghostty remain
-installed through Homebrew casks; Home Manager manages their settings through
-`home/apps/zed.nix` and `home/apps/ghostty.nix`, shared with NixOS. Zed settings
-and keymaps live together in `home/apps/zed.nix`, with explicit platform overrides.
-On macOS, settings and keymaps are read-only and should
-be edited here. Existing files are backed up with `.before-home-manager` on first
-activation. Remove the corresponding chezmoi source ownership before applying
-chezmoi again, so it does not overwrite Home Manager configuration.
-Sofka uses its upstream flake and
-Home Manager module. Imports are explicitly listed in `hosts/macbook/home.nix`.
-
-Mac fonts are declared in `hosts/macbook/default.nix` through nix-darwin
-`fonts.packages`, which installs them in `/Library/Fonts/Nix Fonts`. The next
-rebuild removes their former Homebrew casks and installs the Nix-managed fonts;
-restart applications afterward if they retain cached font lists.
-
-Both hosts import `home/shell` for shared Fish, Git, terminal configuration, and
-CLI packages. Host-specific packages and settings live in
-`hosts/baremetal/home.nix` and the macbook home modules.
-
-The upstream Nix installer bootstraps Nix; nix-darwin then manages the Nix
-daemon and settings declaratively.
-
-Fish retains `~/.config/fish/local.fish` for local overrides. Home Manager installs
-mise and initializes it in Fish. Global Go, Python, Bun, pnpm, Zig, Node, Ruby, Terraform, OpenTofu,
-Vault, Ansible, and ansible-lint versions are declared as `latest` in `hosts/macbook/home.nix`; Java retains its
-existing Temurin 21 default. Run `mise install` after activation to install tools,
-and `mise upgrade <tool>` to refresh a selected tool. Project mise configs can
-select other versions. Nix supplies uv for mise’s isolated Ansible
-and ansible-lint installations. After switching,
-open a new terminal. Home Manager installs nh and sets `NH_DARWIN_FLAKE` to this
-repository's macbook configuration, including untracked files through the `path:`
-reference. Run `nh darwin switch` to rebuild, or `nh darwin switch --update` to
-update all flake inputs first. Run nh as your user; it elevates for activation.
-The update flag changes `flake.lock`; it does not upgrade Homebrew casks or mise
-tools. The former `rebuild-macbook` Fish function has been removed.
-
-`hosts/macbook/homebrew.nix` declares native app casks and the remaining Brew
-exceptions: OpenCode, bagel, Apple Container, dark-notify, nono, and Ollama.
-Homebrew resolves transitive dependencies. nix-homebrew manages the installation
-and migrates an existing prefix automatically; nix-darwin manages its packages and
-Fish integration. Automatic updates and upgrades are disabled. Activation cleanup
-is enabled: removing a declared formula or cask uninstalls it on the next rebuild.
-The Brew executable is pinned in the flake; formula and cask versions follow
-Homebrew's repositories and API.
-
-After installing Nix with flakes enabled, bootstrap or rebuild using the
-repository's pinned nix-darwin executable:
+Install Nix with flakes enabled, clone to `/Users/joel/nix-config`, then run:
 
 ```sh
 sudo -H /nix/var/nix/profiles/default/bin/nix run \
@@ -81,19 +24,90 @@ sudo -H /nix/var/nix/profiles/default/bin/nix run \
   switch --flake 'path:/Users/joel/nix-config#macbook'
 ```
 
-After the first activation, rebuild directly with:
+Open a new terminal after activation.
+
+Install the global development tools declared in `hosts/macbook/home.nix`:
 
 ```sh
-sudo -H /run/current-system/sw/bin/darwin-rebuild switch \
-  --flake 'path:/Users/joel/nix-config#macbook'
+mise -C "$HOME" install
 ```
 
-Build without activating:
+Home Manager installs mise and configures its Fish integration; mise downloads
+the runtimes separately. Running from home avoids a project's mise configuration.
+
+## Rebuild
 
 ```sh
-nix build 'path:/Users/joel/nix-config#darwinConfigurations.macbook.system'
+nh os switch      # NixOS
+nh darwin switch  # macOS
 ```
 
-The `path:` prefix includes new files before they are tracked by Git. Once
-nix-darwin is activated, use its rebuild command for this machine's Home Manager
-changes too.
+Both include Home Manager. Add `--update` to update flake inputs first.
+Run nh without sudo; it elevates when needed. On macOS, `nh darwin build`
+builds without activating.
+
+## Updates outside Nix
+
+`nh darwin switch --update` updates flake inputs and the Nix-managed packages,
+including mise itself. Update mise's global tools separately:
+
+```sh
+mise -C "$HOME" upgrade
+mise -C "$HOME" upgrade node  # Update only one tool
+```
+
+Most global tools use `latest`, so their resolved versions can change independently
+of `flake.lock`. Java stays at its declared version. Edit tool declarations in
+`hosts/macbook/home.nix`; avoid `mise use -g` and `mise upgrade --bump`, which try
+to rewrite Home Manager's managed configuration. Project tool versions remain
+controlled by each project's mise configuration.
+
+To update Nix and the global mise tools together in Fish:
+
+```fish
+nh darwin switch --update; and mise -C "$HOME" upgrade
+```
+
+Tool downloads stay outside activation so a mise download failure does not fail
+a system rebuild. Nix generation rollback does not roll back mise-installed tools.
+
+Homebrew updates and upgrades are not automatic during activation. Update its
+formulae and casks manually, including apps marked as auto-updating, with:
+
+```sh
+brew upgrade --greedy
+```
+
+Applications that provide their own updater can also be updated from the app.
+
+## Local configuration and applications
+
+Fish optionally loads `~/.config/fish/local.fish` after its managed integrations
+for private or machine-local overrides. Keep shared shell settings in this
+repository. Its PATH retains `~/.local/bin` (also exposed as `XDG_BIN_HOME`),
+`~/.bun/bin` for globally installed Bun executables, and `~/.lmstudio/bin` for
+the installed LM Studio app's CLI.
+
+Home Manager manages Fish plugins directly through `programs.fish.plugins`;
+Fisher is no longer needed. Autopair comes from nixpkgs. Fish's built-in
+Catppuccin Macchiato theme uses Latte for light terminals and Macchiato for dark
+terminals. Plugin and theme updates follow Nix updates.
+
+Git includes the external `~/.gitconfig.local` for personal identity and signing
+configuration (`user.name`, `user.email`, and `user.signingKey`). Create that file
+locally on a new machine; it is intentionally kept outside this repository.
+
+Neovim is installed through Home Manager and retains the local LazyVim
+configuration and its plugin management. macOS Helix uses the built-in
+`catppuccin_mocha` theme.
+
+On baremetal, download the Linux Cider AppImage from your Cider download source
+and save it as `~/Applications/Cider.AppImage`. Create `~/Applications` if needed;
+the managed launcher opens that file. Cider handles updates from within the app,
+separately from Nix rebuilds.
+
+## Check
+
+```sh
+nix flake check --no-build
+```

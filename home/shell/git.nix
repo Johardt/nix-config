@@ -31,6 +31,7 @@
       };
 
       commit.gpgsign = true;
+      # Personal identity and signing key stay in an externally managed local file.
       include.path = "~/.gitconfig.local";
       init.defaultBranch = "main";
 
