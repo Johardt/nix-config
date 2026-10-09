@@ -1,14 +1,28 @@
-{ ... }:
+{ pkgs, lib, ... }:
 
+let
+  isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+  modifier = if isDarwin then "cmd" else "super";
+  gitStatus = if isDarwin then "git\\ status" else "git\\x20status";
+in
 {
+  home.sessionVariables = lib.mkIf (!isDarwin) { TERMINAL = "ghostty"; };
+
+  xdg.terminal-exec = lib.mkIf (!isDarwin) {
+    enable = true;
+    settings.default = [ "com.mitchellh.ghostty.desktop" ];
+  };
+
   programs.ghostty = {
     enable = true;
+    # On macOS, nix-darwin's Homebrew cask owns the application.
+    package = if isDarwin then null else pkgs.ghostty;
     settings = {
       # Noctalia owns the generated theme file. Keeping the selector here also
       # lets its apply hook leave Home Manager's read-only config untouched.
-      theme = "noctalia";
+      theme = if isDarwin then "dark:Catppuccin Macchiato,light:Catppuccin Latte" else "noctalia";
       font-family = "GeistMono Nerd Font";
-      font-size = 12;
+      font-size = if isDarwin then 14 else 12;
       font-feature = "calt, liga, dlig";
       cursor-style = "bar";
 
@@ -17,7 +31,6 @@
       window-width = 118;
       confirm-close-surface = false;
       cursor-click-to-move = true;
-      copy-on-select = false;
       unfocused-split-opacity = 0.8;
 
       shell-integration = "detect";
@@ -26,18 +39,40 @@
       keybind = [
         "alt+left=text:\\x1bb"
         "alt+right=text:\\x1bf"
+      ]
+      ++ lib.optionals (!isDarwin) [
         "super+c=copy_to_clipboard"
         "super+v=paste_from_clipboard"
-        "super+left=text:\\x01"
-        "super+right=text:\\x05"
+      ]
+      ++ [
+        "${modifier}+left=text:\\x01"
+        "${modifier}+right=text:\\x05"
+      ]
+      ++ lib.optionals (!isDarwin) [
         "super+t=new_tab"
-        "super+k=text:\\x0c"
-        "super+shift+r=text:reload\\x0d"
-        "super+shift+g=text:git\\x20status\\x0d"
-        "super+shift+l=text:ll\\x0d"
-        "super+f=text:/"
-        "super+shift+f=text:?"
+      ]
+      ++ [
+        "${modifier}+k=text:\\x0c"
+        "${modifier}+shift+r=text:reload\\x0d"
+        "${modifier}+shift+g=text:${gitStatus}\\x0d"
+        "${modifier}+shift+l=text:ll\\x0d"
+        "${modifier}+f=text:/"
+        "${modifier}+shift+f=text:?"
+      ]
+      ++ lib.optionals isDarwin [
+        "global:ctrl+grave_accent=toggle_quick_terminal"
       ];
+    }
+    // lib.optionalAttrs isDarwin {
+      # Use the Nix shell even when the GUI session still has Brew's SHELL value.
+      command = "/run/current-system/sw/bin/fish";
+      window-height = 33;
+      macos-icon = "xray";
+      macos-titlebar-style = "tabs";
+      macos-option-as-alt = false;
+    }
+    // lib.optionalAttrs (!isDarwin) {
+      copy-on-select = false;
     };
   };
 }

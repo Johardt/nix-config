@@ -21,12 +21,17 @@
       gpg = {
         format = "ssh";
         ssh = {
-          program = "/run/current-system/sw/bin/op-ssh-sign";
+          program =
+            if pkgs.stdenv.hostPlatform.isDarwin then
+              "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+            else
+              "/run/current-system/sw/bin/op-ssh-sign";
           allowedSignersFile = "~/.config/git/gitallowedsigners";
         };
       };
 
       commit.gpgsign = true;
+      # Personal identity and signing key stay in an externally managed local file.
       include.path = "~/.gitconfig.local";
       init.defaultBranch = "main";
 

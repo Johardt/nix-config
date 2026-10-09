@@ -1,5 +1,6 @@
 {
   pkgs,
+  mainMonitor,
   umbriel,
   ...
 }:
@@ -105,7 +106,7 @@ in
       };
 
       # Stable activity spaces; numeric bindings and rules select their positions.
-      output."DP-1".workspaces = [
+      output.${mainMonitor.name}.workspaces = [
         "1 Browse"
         "2 Build"
         "3 Connect"

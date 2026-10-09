@@ -1,5 +1,5 @@
 {
-  description = "Joel's NixOS configuration";
+  description = "Joel's NixOS and macOS configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -42,6 +42,27 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    sofka = {
+      url = "github:nklmilojevic/sofka";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.home-manager.follows = "home-manager";
+    };
+
+    nix-homebrew = {
+      url = "github:zhaofengli/nix-homebrew";
+      inputs.brew-src.follows = "homebrew-brew";
+    };
+
+    homebrew-brew = {
+      url = "github:Homebrew/brew/7.0.9";
+      flake = false;
+    };
   };
 
   outputs =
@@ -51,6 +72,11 @@
       apple-fonts,
       hatter,
       home-manager,
+      nix-darwin,
+      sofka,
+      nix-homebrew,
+      homebrew-brew,
+      self,
       disko,
       noctalia,
       noctalia-greeter,
@@ -65,6 +91,31 @@
       };
     in
     {
+      apps.aarch64-darwin.darwin-rebuild = {
+        type = "app";
+        program = "${self.darwinConfigurations.macbook.system}/sw/bin/darwin-rebuild";
+        meta.description = "Build and activate the macbook configuration";
+      };
+
+      darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+        modules = [
+          ./hosts/macbook/default.nix
+          home-manager.darwinModules.home-manager
+          nix-homebrew.darwinModules.nix-homebrew
+          {
+            home-manager.extraSpecialArgs.sofka = sofka;
+            # Retain the installed Brew version instead of nix-homebrew's older default.
+            nix-homebrew.package = homebrew-brew // {
+              name = "brew-7.0.9";
+              version = "7.0.9";
+            };
+            home-manager.extraSpecialArgs.pkgs-unstable = import nixpkgs-unstable {
+              system = "aarch64-darwin";
+            };
+          }
+        ];
+      };
+
       apps.${system}.disko = {
         type = "app";
         program = "${disko.packages.${system}.disko}/bin/disko";
@@ -100,7 +151,7 @@
                   ;
               };
 
-              users.joel = import ./home/joel.nix;
+              users.joel = import ./hosts/baremetal/home.nix;
             };
           }
         ];
