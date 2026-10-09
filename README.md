@@ -26,7 +26,11 @@ sudo -H /nix/var/nix/profiles/default/bin/nix run \
 
 Open a new terminal after activation.
 
-Install the global development tools declared in `hosts/macbook/home.nix`:
+Macbook explicitly imports the development profile in `home/development.nix`,
+which owns its development packages, shell helpers, and mise runtime versions.
+Baremetal keeps its smaller development selection in `hosts/baremetal/home.nix`.
+
+Install the global development tools declared in `home/development.nix`:
 
 ```sh
 mise -C "$HOME" install
@@ -58,7 +62,7 @@ mise -C "$HOME" upgrade node  # Update only one tool
 
 Most global tools use `latest`, so their resolved versions can change independently
 of `flake.lock`. Java stays at its declared version. Edit tool declarations in
-`hosts/macbook/home.nix`; avoid `mise use -g` and `mise upgrade --bump`, which try
+`home/development.nix`; avoid `mise use -g` and `mise upgrade --bump`, which try
 to rewrite Home Manager's managed configuration. Project tool versions remain
 controlled by each project's mise configuration.
 
