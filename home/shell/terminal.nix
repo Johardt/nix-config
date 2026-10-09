@@ -36,8 +36,6 @@
     ];
     extraConfig = ''
       set-option -sa terminal-overrides ",xterm*:Tc"
-      set -g pane-base-index 1
-      set-window-option -g pane-base-index 1
       set-option -g renumber-windows on
       set -g status-left ""
       set -g status-right '#[fg=#{@thm_crust},bg=#{@thm_teal}] session: #S '

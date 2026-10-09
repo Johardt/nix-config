@@ -80,7 +80,6 @@
             --bind \"ctrl-/:change-preview-window(down|hidden|)\"
           "
 
-          fish_vi_key_bindings
           set -g fish_sequence_key_delay_ms 10
         '')
         (lib.mkOrder 1800 ''
