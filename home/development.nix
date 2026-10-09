@@ -18,6 +18,8 @@
     go-task
     pluto
     pre-commit
+    nixd
+    nixfmt
     pv
     stow
     tf-summarize

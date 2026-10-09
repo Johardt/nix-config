@@ -48,9 +48,9 @@ in
           "toml"
           "biome"
         ];
-    # Preserve Linux's mutable settings and macOS's declarative ownership.
-    mutableUserSettings = !isDarwin;
-    mutableUserKeymaps = !isDarwin;
+    # Keep settings and keymaps writable on both hosts; rebuilds merge configured values.
+    mutableUserSettings = true;
+    mutableUserKeymaps = true;
     userSettings =
       lib.recursiveUpdate
         {
@@ -103,6 +103,15 @@ in
           };
           "helix_mode" = false;
           "lsp" = {
+            "nixd" = {
+              "settings" = {
+                "nixd" = {
+                  "formatting" = {
+                    "command" = [ "nixfmt" ];
+                  };
+                };
+              };
+            };
             "biome" = {
               "settings" = {
                 "require_config_file" = true;
@@ -161,6 +170,19 @@ in
             "entry_spacing" = "comfortable";
           };
           "languages" = {
+            "Nix" = {
+              "language_servers" = [
+                "nixd"
+                "!nil"
+              ];
+              "formatter" = {
+                "external" = {
+                  "command" = "nixfmt";
+                  "arguments" = [ "--" ];
+                };
+              };
+              "format_on_save" = "on";
+            };
             "TypeScript" = {
               "language_servers" = [
                 "typescript-ls"
@@ -240,35 +262,9 @@ in
                 "light" = "Noctalia Light";
                 "dark" = "Noctalia Dark";
               };
-              "lsp" = {
-                "nixd" = {
-                  "settings" = {
-                    "nixd" = {
-                      "formatting" = {
-                        "command" = [ "nixfmt" ];
-                      };
-                    };
-                  };
-                };
-              };
               "buffer_font_size" = 15;
               "middle_click_paste" = false;
               "cli_default_open_behavior" = "existing_window";
-              "languages" = {
-                "Nix" = {
-                  "language_servers" = [
-                    "nixd"
-                    "!nil"
-                  ];
-                  "formatter" = {
-                    "external" = {
-                      "command" = "nixfmt";
-                      "arguments" = [ "--" ];
-                    };
-                  };
-                  "format_on_save" = "on";
-                };
-              };
             }
         );
     userKeymaps =
