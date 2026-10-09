@@ -206,6 +206,8 @@
         widget_spacing = 12;
       };
 
+      calendar.enabled = true;
+
       control_center = {
         hidden_tabs = [ "monitor" ];
         calendar.show_week_numbers = true;
@@ -233,11 +235,11 @@
       dock = {
         auto_hide = true;
         enabled = true;
-        background_opacity = 1.0;
+        background_opacity = 0.5;
         border_width = 1.0;
         concave_edge_corners = false;
         icon_size = 48;
-        magnification = true;
+        magnification = false;
         magnification_scale = 1.2;
         margin_edge = 8;
         radius = 16;
@@ -249,8 +251,6 @@
         ];
         reserve_space = false;
       };
-
-      location.address = "Langenfeld, Rheinland";
 
       lockscreen_widgets.enabled = false;
 
@@ -280,9 +280,10 @@
         polkit_agent = true;
         screen_time_enabled = true;
         settings_show_advanced = false;
+        umbriel_overview_type_to_launch_enabled = true;
         animation.speed = 1.5;
         panel = {
-          transparency_mode = "solid";
+          transparency_mode = "glass";
           borders = true;
           shadow = true;
           control_center_placement = "floating";

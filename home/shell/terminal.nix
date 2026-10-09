@@ -10,7 +10,9 @@
       fill.symbol = " ";
       line_break.disabled = true;
       aws.symbol = " ";
+      git_branch.symbol = " ";
       git_status.format = "([$all_status$ahead_behind]($style) )";
+      git_status.deleted = "x";
     };
   };
 

@@ -6,6 +6,7 @@
 }:
 
 let
+  desktop = import ../shared/desktop.nix;
   hatter-icon-theme = pkgs.stdenvNoCC.mkDerivation {
     pname = "hatter-icon-theme";
     version = "unstable-${hatter.shortRev}";
@@ -29,7 +30,6 @@ in
 {
   home.packages =
     (with pkgs; [
-      bibata-cursors
       geist-font
       inter
       nerd-fonts.adwaita-mono
@@ -40,6 +40,15 @@ in
     ++ [ apple-fonts.packages.${pkgs.stdenv.hostPlatform.system}.sf-pro ];
 
   fonts.fontconfig.enable = true;
+
+  home.pointerCursor = {
+    enable = true;
+    package = pkgs.bibata-cursors;
+    name = desktop.cursor.theme;
+    size = desktop.cursor.size;
+    gtk.enable = true;
+    x11.enable = true;
+  };
 
   gtk = {
     enable = true;
