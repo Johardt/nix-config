@@ -1,10 +1,6 @@
-{ config, pkgs, ... }:
+{ config, lib, ... }:
 
 {
-  home.packages = with pkgs; [
-    eza
-  ];
-
   home.sessionVariables = {
     EDITOR = "zed --wait";
     PAGER = "bat";
@@ -31,19 +27,6 @@
   ];
 
   programs = {
-    atuin = {
-      enable = true;
-      enableFishIntegration = true;
-      settings = {
-        filter_mode_shell_up_key_binding = "directory";
-        style = "compact";
-        enter_accept = false;
-        sync.records = true;
-        search.disable_up_key = true;
-        ai.enabled = false;
-      };
-    };
-
     fish = {
       enable = true;
 
@@ -72,30 +55,33 @@
         reload = "exec fish";
       };
 
-      interactiveShellInit = ''
-        set -g fish_greeting
-        set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
-        set -gx FZF_DEFAULT_OPTS '
-          --height 40%
-          --layout=reverse
-          --border=rounded
-          --preview "bat --color=always --style=numbers --line-range=:500 {}"
-          --preview-window=right:60%:wrap
-          --bind="ctrl-u:preview-page-up,ctrl-d:preview-page-down"
-        '
-        set -gx FZF_CTRL_T_OPTS "$FZF_DEFAULT_OPTS
-          --preview \"bat -n --color=always {}\"
-          --bind \"ctrl-/:change-preview-window(down|hidden|)\"
-        "
+      interactiveShellInit = lib.mkMerge [
+        (lib.mkOrder 100 ''
+          set -g fish_greeting
+          set -gx FZF_CTRL_T_COMMAND "$FZF_DEFAULT_COMMAND"
+          set -gx FZF_DEFAULT_OPTS '
+            --height 40%
+            --layout=reverse
+            --border=rounded
+            --preview "bat --color=always --style=numbers --line-range=:500 {}"
+            --preview-window=right:60%:wrap
+            --bind="ctrl-u:preview-page-up,ctrl-d:preview-page-down"
+          '
+          set -gx FZF_CTRL_T_OPTS "$FZF_DEFAULT_OPTS
+            --preview \"bat -n --color=always {}\"
+            --bind \"ctrl-/:change-preview-window(down|hidden|)\"
+          "
 
-        fish_vi_key_bindings
-        set -g fish_sequence_key_delay_ms 10
-
-        set -l local_config "$XDG_CONFIG_HOME/fish/local.fish"
-        if test -f "$local_config"
-          source "$local_config"
-        end
-      '';
+          fish_vi_key_bindings
+          set -g fish_sequence_key_delay_ms 10
+        '')
+        (lib.mkOrder 1800 ''
+          set -l local_config "$XDG_CONFIG_HOME/fish/local.fish"
+          if test -f "$local_config"
+            source "$local_config"
+          end
+        '')
+      ];
 
       functions = {
         fish_user_key_bindings = ''
@@ -179,34 +165,6 @@
       };
     };
 
-    fzf = {
-      enable = true;
-      enableFishIntegration = true;
-    };
 
-    mise = {
-      enable = true;
-      enableFishIntegration = true;
-      globalConfig.settings.color_theme = "catppuccin";
-    };
-
-    starship = {
-      enable = true;
-      enableFishIntegration = true;
-      settings = builtins.fromTOML (builtins.readFile ./starship.toml);
-    };
-
-    zoxide = {
-      enable = true;
-      enableFishIntegration = true;
-      options = [
-        "--cmd"
-        "cd"
-      ];
-    };
   };
-
-  # Atuin creates a regular default config on first launch. Home Manager owns
-  # this path now; account state, encryption keys, and history live elsewhere.
-  xdg.configFile."atuin/config.toml".force = pkgs.lib.mkForce true;
 }

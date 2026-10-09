@@ -100,7 +100,7 @@
                   ;
               };
 
-              users.joel = import ./home/joel.nix;
+              users.joel = import ./hosts/baremetal/home.nix;
             };
           }
         ];
