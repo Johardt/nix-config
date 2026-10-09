@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 
 {
   programs.man.generateCaches = false;
@@ -20,14 +25,7 @@
       fish_add_path --move --path "$HOME/.nix-profile/bin" /run/current-system/sw/bin
     '';
 
-    interactiveShellInit = ''
-      if command -q mise
-        mise activate fish | source
-      end
-    '';
-
     shellAliases = {
-      cm = "chezmoi";
       oc = "opencode";
       pw = "packwiz";
       kc = "kubectl";
@@ -37,7 +35,7 @@
 
     functions = {
       assume = ''
-        source (command -s assume.fish) $argv
+        source ${pkgs.granted}/share/assume.fish $argv
       '';
       kcfg = ''
         kubeconfig-load $argv
@@ -65,7 +63,9 @@
   };
 
   # Replace chezmoi's old startup fragments to prevent duplicate initialization.
-  xdg.configFile."fish/conf.d/00-env.fish".text = "# Environment is managed in config.fish by Home Manager.\n";
-  xdg.configFile."fish/conf.d/aliases.fish".text = "# Aliases are managed in config.fish by Home Manager.\n";
+  xdg.configFile."fish/conf.d/00-env.fish".text =
+    "# Environment is managed in config.fish by Home Manager.\n";
+  xdg.configFile."fish/conf.d/aliases.fish".text =
+    "# Aliases are managed in config.fish by Home Manager.\n";
   xdg.configFile."fish/conf.d/keybinds.fish".text = "# Keybindings are managed by Home Manager.\n";
 }

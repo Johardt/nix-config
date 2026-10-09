@@ -7,6 +7,7 @@ in
   imports = [
     ../../home/desktop.nix
     ../../home/shell
+    ../../home/apps/editors.nix
   ];
 
   home.username = "joel";
@@ -15,7 +16,6 @@ in
   home.packages = with pkgs; [
     dotnet
     luarocks
-    neovim
     nixd
     nixfmt
     biome
@@ -28,19 +28,7 @@ in
 
   programs.bat.config.theme = "noctalia";
 
-  programs.helix = {
-    enable = true;
-    settings = {
-      theme = "noctalia";
-      editor = {
-        line-number = "relative";
-        cursor-shape = {
-          insert = "bar";
-          normal = "block";
-        };
-      };
-    };
-  };
+  programs.helix.settings.theme = "noctalia";
   # Atuin creates a regular default config on first launch. Home Manager owns
   # this path now; account state, encryption keys, and history live elsewhere.
   xdg.configFile."atuin/config.toml".force = pkgs.lib.mkForce true;
