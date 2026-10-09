@@ -1,0 +1,16 @@
+{ ... }:
+
+{
+  imports = [
+    ../../home/shell
+    ./terminal.nix
+    ./fish.nix
+  ];
+
+  home.username = "joel";
+  home.homeDirectory = "/Users/joel";
+  home.stateVersion = "26.05";
+
+  xdg.enable = true;
+  programs.home-manager.enable = true;
+}

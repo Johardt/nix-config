@@ -1,5 +1,5 @@
 {
-  description = "Joel's NixOS configuration";
+  description = "Joel's NixOS and macOS configuration";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
@@ -42,6 +42,12 @@
       url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-darwin = {
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs =
@@ -51,6 +57,8 @@
       apple-fonts,
       hatter,
       home-manager,
+      nix-darwin,
+      self,
       disko,
       noctalia,
       noctalia-greeter,
@@ -65,6 +73,24 @@
       };
     in
     {
+      apps.aarch64-darwin.darwin-rebuild = {
+        type = "app";
+        program = "${self.darwinConfigurations.macbook.system}/sw/bin/darwin-rebuild";
+        meta.description = "Build and activate the macbook configuration";
+      };
+
+      darwinConfigurations.macbook = nix-darwin.lib.darwinSystem {
+        modules = [
+          ./hosts/macbook/default.nix
+          home-manager.darwinModules.home-manager
+          {
+            home-manager.extraSpecialArgs.pkgs-unstable = import nixpkgs-unstable {
+              system = "aarch64-darwin";
+            };
+          }
+        ];
+      };
+
       apps.${system}.disko = {
         type = "app";
         program = "${disko.packages.${system}.disko}/bin/disko";
