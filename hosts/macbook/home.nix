@@ -57,6 +57,10 @@
   xdg.enable = true;
   programs.home-manager.enable = true;
 
+  programs.nh = {
+    enable = true;
+    darwinFlake = "path:/Users/joel/nix-config#darwinConfigurations.macbook";
+  };
 
   programs.helix.settings.theme = "active";
   programs.sofka.enable = true;

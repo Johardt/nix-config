@@ -55,10 +55,6 @@
         set -gx KUBECONFIG /dev/null
         echo "KUBECONFIG disabled"
       '';
-      rebuild-macbook = ''
-        sudo -H /run/current-system/sw/bin/darwin-rebuild switch \
-          --flake 'path:/Users/joel/nix-config#macbook' $argv
-      '';
     };
   };
 
