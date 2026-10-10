@@ -6,7 +6,7 @@
     enableFishIntegration = true;
     settings = {
       right_format = "";
-      format = "$all$fill$terraform$kubernetes$aws\n$shell$character\n";
+      format = "$directory$git_branch$git_status$fill$terraform$kubernetes$aws\n$shell$character\n";
       fill.symbol = " ";
       line_break.disabled = true;
       aws.symbol = " ";
