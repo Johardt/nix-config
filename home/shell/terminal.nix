@@ -1,14 +1,22 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 
 {
   programs.starship = {
     enable = true;
     enableFishIntegration = true;
+    enableZshIntegration = true;
     settings = {
       right_format = "";
       format = "$directory$git_branch$git_status$fill$terraform$kubernetes$aws\n$shell$character\n";
       fill.symbol = " ";
       line_break.disabled = true;
+      shell = {
+        disabled = false;
+        fish_indicator = "";
+        zsh_indicator = "\\$";
+        format = "[$indicator]($style) ";
+        style = config.programs.starship.settings.git_branch.style or "bold purple";
+      };
       aws.symbol = " ";
       git_branch.symbol = " ";
       git_status.format = "([$all_status$ahead_behind]($style) )";
@@ -51,6 +59,7 @@
     atuin = {
       enable = true;
       enableFishIntegration = true;
+      enableZshIntegration = true;
       settings = {
         filter_mode_shell_up_key_binding = "directory";
         style = "compact";
@@ -64,6 +73,7 @@
     fzf = {
       enable = true;
       enableFishIntegration = true;
+      enableZshIntegration = true;
     };
 
     zoxide = {
